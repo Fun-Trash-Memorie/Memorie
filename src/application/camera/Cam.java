@@ -74,8 +74,6 @@ public class Cam extends JFrame {
 
         while(true) {
             cap.read(image);
-            HighGui.imshow("WebcamTest", image);
-            HighGui.waitKey(1);
             final MatOfByte buf = new MatOfByte();
             Imgcodecs.imencode(".jpg", image, buf);
 
