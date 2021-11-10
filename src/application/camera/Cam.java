@@ -1,68 +1,101 @@
 package application.camera;
 
+import application.sound.SoundSystem;
 import application.window.Renderer;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.sql.SQLOutput;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Cam extends JFrame {
 
     private JLabel camLabel;
-    private JPanel buttonPanel;
-    private JButton captureButton;
+    private JPanel buttonPanel, mainPanel;
+    private JButton captureButton, exitButton;
 
     private VideoCapture cap;
     private Mat image;
 
-    private boolean clicked = false, closed = false;
+    private boolean cbClicked = false, ebClicked = false;
 
     public Cam() {
 
         setLayout(new BorderLayout());
 
+        mainPanel = new JPanel();
+        mainPanel.setPreferredSize(new Dimension(640, 720));
+        mainPanel.setBackground(Color.DARK_GRAY);
+        add(mainPanel);
+
         camLabel = new JLabel();
-        camLabel.setPreferredSize(new Dimension(640, 680));
-        add(camLabel, BorderLayout.NORTH);
+        camLabel.setPreferredSize(new Dimension(640, 480));
+        camLabel.setBackground(Color.DARK_GRAY);
+        mainPanel.add(camLabel, BorderLayout.NORTH);
 
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout());
-        buttonPanel.setPreferredSize(new Dimension(640, 180));
-        add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.setBackground(Color.lightGray);
+        buttonPanel.setPreferredSize(new Dimension(640, 100));
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        captureButton = new JButton("Klick.");
-        captureButton.setPreferredSize(new Dimension(400, 52));
-        //captureButton.setBounds(76, 414, 247, 152);
-        buttonPanel.add(captureButton, BorderLayout.CENTER);
-
+        captureButton = new JButton("Klick!");
+        captureButton.setPreferredSize(new Dimension(200, 50));
+        captureButton.setBackground(Color.ORANGE);
         captureButton.addActionListener(e -> {
-            clicked = true;
+            cbClicked = true;
         });
+        captureButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                captureButton.setBackground(Color.gray);
+                Renderer.soundSystem = new SoundSystem("KameraKlickSound.wav");
+            }
+            @Override
+            public void mouseReleased(MouseEvent  e) {
+                captureButton.setBackground(Color.ORANGE);
+            }
+        });
+        buttonPanel.add(captureButton, BorderLayout.NORTH);
 
-        setSize(new Dimension(640, 580));
+        exitButton = new JButton("Schließen");
+        exitButton.setPreferredSize(new Dimension(200, 50));
+        exitButton.setBackground(Color.LIGHT_GRAY);
+        exitButton.addActionListener(e -> {
+            ebClicked = true;
+        });
+        exitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                exitButton.setBackground(Color.gray);
+
+            }
+            @Override
+            public void mouseReleased(MouseEvent  e) {
+                exitButton.setBackground(Color.LIGHT_GRAY);
+            }
+        });
+        buttonPanel.add(exitButton, BorderLayout.SOUTH);
+
+        setSize(new Dimension(640, 720));
         setLocationRelativeTo(null);
+        setBackground(Color.LIGHT_GRAY);
         setVisible(true);
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                super.windowClosed(e);
-
+                image.release();
+                cap.release();
+                System.out.println("Cam released");
             }
         });
-
-        }
+    }
 
     public void startCam(){
 
@@ -81,12 +114,19 @@ public class Cam extends JFrame {
             icon = new ImageIcon(imageData);
             camLabel.setIcon(icon);
 
-            if(clicked) {
+            if(cbClicked) {
                 String name = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss").format(new Date());
                 Imgcodecs.imwrite("img/" + name + ".jpg", image);
-                clicked = false;
+                cbClicked = false;
+            }
+
+            if(ebClicked) {
+                image.release();
+                cap.release();
+                System.out.println("CamThread beendet.");
+                ebClicked = false;
+                System.exit(0);
             }
         }
     }
-
 }
