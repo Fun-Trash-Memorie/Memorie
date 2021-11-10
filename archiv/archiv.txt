@@ -1,0 +1,13 @@
+public void OpenWebcam()
+    {
+
+        HighGui.namedWindow("WebcamTest", HighGui.WINDOW_AUTOSIZE);
+
+        while(cap.isOpened() && cap.read(image))
+        {
+            cap.read(image);
+            HighGui.imshow("WebcamTest", image);
+            HighGui.waitKey(1);
+        }
+    }
+
