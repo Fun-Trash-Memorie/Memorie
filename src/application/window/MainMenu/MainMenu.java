@@ -1,5 +1,6 @@
 package application.window.MainMenu;
 
+import application.Main;
 import application.camera.CamThread;
 import application.window.Renderer;
 
@@ -48,8 +49,8 @@ public class MainMenu extends JFrame {
         JButton camButton = new JButton("CAM");
         camButton.setPreferredSize(new Dimension(100, 50));
         camButton.addActionListener(e -> {
-            Renderer.camThread = new CamThread();
-            Renderer.camThread.start();
+            Main.camThread = new CamThread();
+            Main.camThread.start();
         });
         p.add(camButton, BorderLayout.SOUTH);
         // -------

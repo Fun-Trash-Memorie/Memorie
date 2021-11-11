@@ -14,6 +14,7 @@ public class SoundSystem {
                     Clip clip = AudioSystem.getClip();
                     URL path = this.getClass().getClassLoader().getResource(wav);
                     //System.out.println("try to get stream");
+                    assert path != null;
                     AudioInputStream inputStream = AudioSystem.getAudioInputStream(path);
                     //System.out.println("got stream");
                     clip.open(inputStream);

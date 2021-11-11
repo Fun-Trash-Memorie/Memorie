@@ -1,7 +1,7 @@
 package application.camera;
 
+import application.Main;
 import application.sound.SoundSystem;
-import application.window.Renderer;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -15,20 +15,20 @@ import java.util.Date;
 
 public class Cam extends JFrame {
 
-    private JLabel camLabel;
-    private JPanel buttonPanel, mainPanel;
-    private JButton captureButton, exitButton;
+    private final JLabel camLabel;
+    private final JButton captureButton;
+    private final JButton exitButton;
 
     private VideoCapture cap;
     private Mat image;
 
-    private boolean cbClicked = false, ebClicked = false;
+    private boolean cbClicked = false, ebClicked = false, cam = true;
 
     public Cam() {
 
         setLayout(new BorderLayout());
 
-        mainPanel = new JPanel();
+        JPanel mainPanel = new JPanel();
         mainPanel.setPreferredSize(new Dimension(640, 720));
         mainPanel.setBackground(Color.DARK_GRAY);
         add(mainPanel);
@@ -38,7 +38,7 @@ public class Cam extends JFrame {
         camLabel.setBackground(Color.DARK_GRAY);
         mainPanel.add(camLabel, BorderLayout.NORTH);
 
-        buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout());
         buttonPanel.setBackground(Color.lightGray);
         buttonPanel.setPreferredSize(new Dimension(640, 100));
@@ -47,14 +47,12 @@ public class Cam extends JFrame {
         captureButton = new JButton("Klick!");
         captureButton.setPreferredSize(new Dimension(200, 50));
         captureButton.setBackground(Color.ORANGE);
-        captureButton.addActionListener(e -> {
-            cbClicked = true;
-        });
+        captureButton.addActionListener(e -> cbClicked = true);
         captureButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 captureButton.setBackground(Color.gray);
-                Renderer.soundSystem = new SoundSystem("KameraKlickSound.wav");
+                Main.soundSystem = new SoundSystem("KameraKlickSound.wav");
             }
             @Override
             public void mouseReleased(MouseEvent  e) {
@@ -66,9 +64,7 @@ public class Cam extends JFrame {
         exitButton = new JButton("Schließen");
         exitButton.setPreferredSize(new Dimension(200, 50));
         exitButton.setBackground(Color.LIGHT_GRAY);
-        exitButton.addActionListener(e -> {
-            ebClicked = true;
-        });
+        exitButton.addActionListener(e -> ebClicked = true);
         exitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -82,6 +78,7 @@ public class Cam extends JFrame {
         });
         buttonPanel.add(exitButton, BorderLayout.SOUTH);
 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(new Dimension(640, 720));
         setLocationRelativeTo(null);
         setBackground(Color.LIGHT_GRAY);
@@ -105,7 +102,7 @@ public class Cam extends JFrame {
 
         ImageIcon icon;
 
-        while(true) {
+        while(cam == true) {
             cap.read(image);
             final MatOfByte buf = new MatOfByte();
             Imgcodecs.imencode(".jpg", image, buf);
@@ -115,7 +112,7 @@ public class Cam extends JFrame {
             camLabel.setIcon(icon);
 
             if(cbClicked) {
-                String name = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss").format(new Date());
+                String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
                 Imgcodecs.imwrite("img/" + name + ".jpg", image);
                 cbClicked = false;
             }
@@ -123,9 +120,12 @@ public class Cam extends JFrame {
             if(ebClicked) {
                 image.release();
                 cap.release();
+                buf.release();
                 System.out.println("CamThread beendet.");
                 ebClicked = false;
-                System.exit(0);
+                cam = false;
+                this.dispose();
+
             }
         }
     }
