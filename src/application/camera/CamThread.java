@@ -4,10 +4,7 @@ public class CamThread extends Thread {
 
     public void run(){
         System.out.println("CamThread startet.");
-
         Cam cam = new Cam();
         cam.startCam();
-
     }
-
 }

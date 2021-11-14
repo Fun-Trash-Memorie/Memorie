@@ -1,2 +1,6 @@
 https://stackoverflow.com/questions/26305/how-can-i-play-sound-in-java  ~AudioSystem setup
 https://www.youtube.com/watch?v=NUQc7-dYIxA&t=825s  ~ image from webcam
+https://stackoverflow.com/questions/3680221/how-can-i-get-screen-resolution-in-java ~get screen Size
+
+backgroundmusik:
+https://www.musicfox.com/info/kostenlose-gemafreie-musik.php

@@ -15,9 +15,8 @@ import java.util.Date;
 
 public class Cam extends JFrame {
 
-    private final JLabel camLabel;
-    private final JButton captureButton;
-    private final JButton exitButton;
+    private final JLabel CAM_LBL;
+    private final JButton CAPTURE_BTN, EXIT_BTN;
 
     private VideoCapture cap;
     private Mat image;
@@ -33,10 +32,10 @@ public class Cam extends JFrame {
         mainPanel.setBackground(Color.DARK_GRAY);
         add(mainPanel);
 
-        camLabel = new JLabel();
-        camLabel.setPreferredSize(new Dimension(640, 480));
-        camLabel.setBackground(Color.DARK_GRAY);
-        mainPanel.add(camLabel, BorderLayout.NORTH);
+        CAM_LBL = new JLabel();
+        CAM_LBL.setPreferredSize(new Dimension(640, 480));
+        CAM_LBL.setBackground(Color.DARK_GRAY);
+        mainPanel.add(CAM_LBL, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout());
@@ -44,39 +43,39 @@ public class Cam extends JFrame {
         buttonPanel.setPreferredSize(new Dimension(640, 100));
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        captureButton = new JButton("Klick!");
-        captureButton.setPreferredSize(new Dimension(200, 50));
-        captureButton.setBackground(Color.ORANGE);
-        captureButton.addActionListener(e -> cbClicked = true);
-        captureButton.addMouseListener(new MouseAdapter() {
+        CAPTURE_BTN = new JButton("Klick!");
+        CAPTURE_BTN.setPreferredSize(new Dimension(200, 50));
+
+        CAPTURE_BTN.setBackground(Color.ORANGE);
+        CAPTURE_BTN.addActionListener(e -> cbClicked = true);
+        CAPTURE_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                captureButton.setBackground(Color.gray);
+                CAPTURE_BTN.setBackground(Color.gray);
                 Main.soundSystem = new SoundSystem("KameraKlickSound.wav");
             }
             @Override
             public void mouseReleased(MouseEvent  e) {
-                captureButton.setBackground(Color.ORANGE);
+                CAPTURE_BTN.setBackground(Color.ORANGE);
             }
         });
-        buttonPanel.add(captureButton, BorderLayout.NORTH);
+        buttonPanel.add(CAPTURE_BTN, BorderLayout.NORTH);
 
-        exitButton = new JButton("Schließen");
-        exitButton.setPreferredSize(new Dimension(200, 50));
-        exitButton.setBackground(Color.LIGHT_GRAY);
-        exitButton.addActionListener(e -> ebClicked = true);
-        exitButton.addMouseListener(new MouseAdapter() {
+        EXIT_BTN = new JButton("Schließen");
+        EXIT_BTN.setPreferredSize(new Dimension(200, 50));
+        EXIT_BTN.setBackground(Color.LIGHT_GRAY);
+        EXIT_BTN.addActionListener(e -> ebClicked = true);
+        EXIT_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                exitButton.setBackground(Color.gray);
-
+                EXIT_BTN.setBackground(Color.gray);
             }
             @Override
             public void mouseReleased(MouseEvent  e) {
-                exitButton.setBackground(Color.LIGHT_GRAY);
+                EXIT_BTN.setBackground(Color.LIGHT_GRAY);
             }
         });
-        buttonPanel.add(exitButton, BorderLayout.SOUTH);
+        buttonPanel.add(EXIT_BTN, BorderLayout.SOUTH);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(new Dimension(640, 720));
@@ -102,14 +101,19 @@ public class Cam extends JFrame {
 
         ImageIcon icon;
 
-        while(cam == true) {
+        while(cam) {
             cap.read(image);
             final MatOfByte buf = new MatOfByte();
-            Imgcodecs.imencode(".jpg", image, buf);
+            try {
+                Imgcodecs.imencode(".jpg", image, buf);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             imageData = buf.toArray();
             icon = new ImageIcon(imageData);
-            camLabel.setIcon(icon);
+            CAM_LBL.setIcon(icon);
 
             if(cbClicked) {
                 String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
@@ -125,7 +129,6 @@ public class Cam extends JFrame {
                 ebClicked = false;
                 cam = false;
                 this.dispose();
-
             }
         }
     }
