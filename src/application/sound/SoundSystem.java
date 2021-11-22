@@ -20,7 +20,7 @@ public class SoundSystem {
                 try {
                     Clip clip = AudioSystem.getClip();
                     URL path = this.getClass().getClassLoader().getResource(wav);
-                    assert path != null;    // Es wird die Bedinngung aufgestell, dass die URL path nicht 'null' sein darf.
+                    assert path != null;    // Es wird die Bedingung aufgestell, dass die URL path nicht 'null' sein darf.
                     AudioInputStream inputStream = AudioSystem.getAudioInputStream(path);
                     clip.open(inputStream); // Die Datei wird geöffnet.
                     clip.start();   // Die Datei wird abgespielt.

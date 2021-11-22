@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class Window extends JFrame {
 
+    //Standardbildschirm und Bildschirmgröße bestimmen
     private final GraphicsDevice GD = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     private final int WINDOW_WIDTH = (int)(GD.getDisplayMode().getWidth() / 1.5);
     private final int WINDOW_HEIGHT = (int)(GD.getDisplayMode().getHeight() / 1.5);
