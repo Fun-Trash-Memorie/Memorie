@@ -34,8 +34,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL2ES2;
-
 /**
  * Loads a vertex and fragment shader from files and compiles the shaders.
  * Creates a shader program and stores the OpenGL-ID it.

@@ -14,17 +14,20 @@ import java.awt.*;
 public class GamePanel extends JPanel {
 
     public GamePanel() {
-        setSize(Main.window.getPreferredSize());
-        this.setBackground(Color.green);
+
+        Color grayWeneed = Color.decode("#787878");
+
 
         GLProfile profile = GLProfile.get(GLProfile.GL3);
         GLCapabilities capabilities = new GLCapabilities(profile);
 
         GLCanvas canvas = new Renderer(capabilities);
-        canvas.setSize(new Dimension(Main.window.getWidth(), Main.window.getHeight()));
+        canvas.setBounds(0, 0, Main.window.getWidth(), Main.window.getHeight());
         FPSAnimator animator = new FPSAnimator(canvas, 60, true);
 
-        add(canvas, BorderLayout.CENTER);
+        add(canvas);
+
+        setSize(Main.window.getPreferredSize());
         animator.start();
 
         Thread t1 = new Thread(() -> {

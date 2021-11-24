@@ -21,6 +21,8 @@ public class Cam extends JFrame {
     private VideoCapture cap;
     private Mat image;
 
+    private MatOfByte buf;
+
     private boolean cbClicked = false, ebClicked = false, cam = true;
 
     public Cam() {
@@ -64,11 +66,20 @@ public class Cam extends JFrame {
         EXIT_BTN = new JButton("Schließen");
         EXIT_BTN.setPreferredSize(new Dimension(200, 50));
         EXIT_BTN.setBackground(Color.LIGHT_GRAY);
-        EXIT_BTN.addActionListener(e -> ebClicked = true);
+        EXIT_BTN.addActionListener(e -> {
+            image.release();
+            cap.release();
+            buf.release();
+            System.out.println("CamThread beendet.");
+            ebClicked = false;
+            cam = false;
+            this.dispose();
+        });
         EXIT_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 EXIT_BTN.setBackground(Color.gray);
+
             }
             @Override
             public void mouseReleased(MouseEvent  e) {
@@ -103,32 +114,23 @@ public class Cam extends JFrame {
 
         while(cam) {
             cap.read(image);
-            final MatOfByte buf = new MatOfByte();
+            buf = new MatOfByte();
             try {
                 Imgcodecs.imencode(".jpg", image, buf);
 
+                imageData = buf.toArray();
+
+                icon = new ImageIcon(imageData);
+                CAM_LBL.setIcon(icon);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                System.err.println("Keine Kamera gefunden.");
+                cam = false;
             }
-
-            imageData = buf.toArray();
-            icon = new ImageIcon(imageData);
-            CAM_LBL.setIcon(icon);
-
             if(cbClicked) {
                 String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
                 Imgcodecs.imwrite("img/" + name + ".jpg", image);
                 cbClicked = false;
-            }
-
-            if(ebClicked) {
-                image.release();
-                cap.release();
-                buf.release();
-                System.out.println("CamThread beendet.");
-                ebClicked = false;
-                cam = false;
-                this.dispose();
             }
         }
     }

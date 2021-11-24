@@ -1,35 +1,61 @@
 package application.sound;
 
 import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class SoundSystem {
 
+    private Clip clip;
+    private AudioInputStream audioInputStream;
     /**
      *
      * @Source https://stackoverflow.com/questions/26305/how-can-i-play-sound-in-java
      *
      */
         // jedem SoundSystem wird seine .wav Datei mitgegeben
-    public SoundSystem(String wav){
-            // jedes kreierte SoundSystem läuft auf seinem eigenen Thread ---
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Clip clip = AudioSystem.getClip();
-                    URL path = this.getClass().getClassLoader().getResource(wav);
-                    assert path != null;    // Es wird die Bedingung aufgestell, dass die URL path nicht 'null' sein darf.
-                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(path);
-                    clip.open(inputStream); // Die Datei wird geöffnet.
-                    clip.start();   // Die Datei wird abgespielt.
-                    System.out.println(wav + " wurde erfolgreich abgespielt");
-                } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-                    e.printStackTrace();
-                    System.err.println("Audio konnte nicht geladen oder abgespielt werden!");
-                }
-            }
-        }).start();
+    public SoundSystem(String wav) {
+        // create AudioInputStream object
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(new File("wav//" + wav).getAbsoluteFile());
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        // create clip reference
+        try {
+            clip = AudioSystem.getClip();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
+        // open audioInputStream to the clip
+        try {
+            clip.open(audioInputStream);
+        } catch (LineUnavailableException | IOException e) {
+            e.printStackTrace();
+        }
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+
     }
+
+    // Method to play the audio
+    public void play() {
+        // start the clip
+        clip.start();
+
+        setVolume(30);
+    }
+
+    public void setVolume(int volume)
+    {
+        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        gainControl.setValue(0);
+
+        double gain = ((double) volume / 100); // number between 0 and 1 (loudest)
+        float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
+        gainControl.setValue(dB);
+    }
+
+
 }
