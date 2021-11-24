@@ -268,7 +268,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                     System.out.println(" No button detected.");
                     break;
                 default:
-                    System.out.println("Unknow button pressed.");
+                    System.out.println("Unknown button pressed.");
             }
         }
         switch (releasedButton) {
