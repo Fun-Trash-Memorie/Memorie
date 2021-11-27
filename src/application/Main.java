@@ -1,10 +1,9 @@
 package application;
 
-import application.camera.CamThread;
+import application.camera.Cam;
 import application.sound.SoundSystem;
 import application.window.Window;
 import application.window.game.GamePanel;
-import application.window.game.GameThread;
 import application.window.game.MainMenuPanel;
 
 import org.opencv.core.Core;
@@ -13,8 +12,7 @@ import java.awt.*;
 
 public class Main {
 
-    public static CamThread camThread;
-    public static GameThread gameThread;
+    public static Cam cam;
     public static SoundSystem soundSystem;
     public static MainMenuPanel mainMenuPanel;
     public static GamePanel gamePanel;
@@ -38,9 +36,5 @@ public class Main {
         //Hauptmenü zum Fenster zuweisen und anzeigen
         window.add(mainMenuPanel, BorderLayout.CENTER);
         window.setVisible(true);
-
-        //gameThread initialisiert für die Abfrage der Knöpfe
-        gameThread = new GameThread();
-        gameThread.start();
     }
 }

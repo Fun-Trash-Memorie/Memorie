@@ -14,7 +14,7 @@ public class Window extends JFrame {
         System.out.println("Fenster wird kreiert...");
         setTitle("Memory");
         setSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        setLayout(new BorderLayout());
+        //setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(this.EXIT_ON_CLOSE);
