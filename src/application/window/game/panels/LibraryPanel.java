@@ -6,7 +6,6 @@ import application.window.game.ConstructionHelper;
 import org.opencv.core.CvException;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;

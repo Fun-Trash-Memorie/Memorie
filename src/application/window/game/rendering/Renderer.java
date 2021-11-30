@@ -134,7 +134,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
         // Transferring the vertex data (see above) to the VBO on GPU.
         // (floats use 4 bytes in Java)
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, (long) verticies.length * Float.BYTES,
                 FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
 
 
@@ -146,7 +146,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 
         gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
         gl.glBufferData(
-                GL.GL_ELEMENT_ARRAY_BUFFER, this.indices.length * Integer.BYTES,
+                GL.GL_ELEMENT_ARRAY_BUFFER, (long) this.indices.length * Integer.BYTES,
                 IntBuffer.wrap(indices), GL.GL_STATIC_DRAW
         );
 

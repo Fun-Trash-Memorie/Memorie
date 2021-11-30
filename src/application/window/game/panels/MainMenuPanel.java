@@ -109,6 +109,7 @@ public class MainMenuPanel extends JPanel implements ConstructionHelper { //Das 
             Main.mainMenuPanel.setVisible(false);
             Main.window.remove(Main.mainMenuPanel);
             Main.window.repaint();
+            Main.libraryPanel.setVisible(true);
             Main.window.add(Main.libraryPanel);
         });
         b_lib.addMouseListener(new MouseAdapter() {
@@ -131,6 +132,7 @@ public class MainMenuPanel extends JPanel implements ConstructionHelper { //Das 
             Main.mainMenuPanel.setVisible(false);
             Main.window.remove(Main.mainMenuPanel);
             Main.window.repaint();
+            Main.settingPanel.setVisible(true);
             Main.window.add(Main.settingPanel);
         });
         b_opt.addMouseListener(new MouseAdapter() {

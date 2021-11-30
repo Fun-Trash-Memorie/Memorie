@@ -9,6 +9,7 @@ public interface ConstructionHelper {
     int width = (int)(gd.getDisplayMode().getWidth() / 1.5);
     int height = (int)(gd.getDisplayMode().getHeight() / 1.5);
 
+    int margin = 5;
     int padding = 10;
 
     int btn_width = 400;
