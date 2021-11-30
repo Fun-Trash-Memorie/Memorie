@@ -85,6 +85,7 @@ public class MainMenuPanel extends JPanel implements ConstructionHelper { //Das 
             Main.mainMenuPanel.setVisible(false);
             Main.window.remove(Main.mainMenuPanel);
             Main.window.repaint();
+            Main.gameSelectPanel.setVisible(true);
             Main.window.add(Main.gameSelectPanel);
         });
         b_play.addMouseListener(new MouseAdapter() {
