@@ -5,13 +5,19 @@ import application.sound.SoundSystem;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Cam extends JFrame {
 
@@ -20,6 +26,8 @@ public class Cam extends JFrame {
 
     private VideoCapture cap;
     private Mat image;
+    
+    private BufferedImage img;
 
     private MatOfByte buf;
 
@@ -67,13 +75,6 @@ public class Cam extends JFrame {
         EXIT_BTN.setPreferredSize(new Dimension(200, 50));
         EXIT_BTN.setBackground(Color.LIGHT_GRAY);
         EXIT_BTN.addActionListener(e -> {
-            image.release();
-            cap.release();
-            buf.release();
-            System.out.println("CamThread beendet.");
-            ebClicked = false;
-            cam = false;
-            this.dispose();
         });
         EXIT_BTN.addMouseListener(new MouseAdapter() {
             @Override
@@ -84,6 +85,8 @@ public class Cam extends JFrame {
             @Override
             public void mouseReleased(MouseEvent  e) {
                 EXIT_BTN.setBackground(Color.LIGHT_GRAY);
+                ebClicked = true;
+                Main.cam.dispose();
             }
         });
         buttonPanel.add(EXIT_BTN, BorderLayout.SOUTH);
@@ -99,39 +102,108 @@ public class Cam extends JFrame {
             public void windowClosed(WindowEvent e) {
                 image.release();
                 cap.release();
+                buf.release();
+                cam=false;
                 System.out.println("Cam released");
             }
         });
     }
 
-    public void startCam(){
+    public void startCam() throws IOException {
+
+        System.out.println("Cam gestartet");
 
         cap = new VideoCapture(0);
         image = new Mat();
+        new Thread(){
         byte[] imageData;
 
         ImageIcon icon;
+                public void run(){
+                boolean cam = Main.cam.cam;
+                while(cam) {
+                    cap.read(image);
+                    Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2GRAY, 0);
+                    buf = new MatOfByte();
+                    try {
+                        Imgcodecs.imencode(".jpg", image, buf);
 
-        while(cam) {
-            cap.read(image);
-            buf = new MatOfByte();
-            try {
-                Imgcodecs.imencode(".jpg", image, buf);
+                        imageData = buf.toArray();
 
-                imageData = buf.toArray();
+                        icon = new ImageIcon(imageData);
 
-                icon = new ImageIcon(imageData);
-                CAM_LBL.setIcon(icon);
-            } catch (Exception e) {
-                //e.printStackTrace();
-                System.err.println("Keine Kamera gefunden.");
+                        CAM_LBL.setIcon(icon);
+
+                    } catch (Exception e) {
+                        System.err.println("Keine Kamera gefunden. Show Stack-trace?    [y][n]");
+                        Scanner scanner = new Scanner(System.in);
+                        String s = scanner.nextLine();
+                        if (s.equals("y"))
+                            e.printStackTrace();
+                        scanner.close();
+                    }
+
+                    if (cbClicked) {
+                        String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
+                        Imgcodecs.imwrite("img/" + name + ".jpg", image);
+                        cbClicked = false;
+            /*
+            if(isMatching(name)){
+                System.out.println("Match!");
+
                 cam = false;
+            }*/
+                    }
+                    if (ebClicked){
+                        imageData = null;
+                        image.release();
+                        cap.release();
+                        buf.release();
+                        cam = false;
+                    }
+                }
             }
-            if(cbClicked) {
-                String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
-                Imgcodecs.imwrite("img/" + name + ".jpg", image);
-                cbClicked = false;
+        }.start();
+
+
+    }
+
+    private boolean isMatching(String name) throws IOException {
+        img = ImageIO.read(new File("img/" + name + ".jpg"));
+
+        int xRange = 20, yRange = 20, xStart = img.getWidth()/8, xEnd = img.getWidth()-xStart, yStart = img.getHeight()/8, yEnd = img.getHeight()-yStart;
+
+        System.out.println("Checking Top");
+        for (int x = xStart - xRange/2; x < xEnd + xRange/2; x++){
+            for (int y = yStart - yRange/2; y < yStart + yRange/2; y++){
+                System.out.println(y + " " + x);
             }
         }
+        System.out.println("Checking Left");
+        for (int y = yStart - yRange/2; y < yEnd + yRange/2; y++){
+            for (int x = xStart - xRange/2; x < xStart + xRange/2; x++){
+                System.out.println(y + " " + x);
+            }
+        }
+        System.out.println("Checking Bottom");
+        for (int x = xStart - xRange/2; x < xEnd + xRange/2; x++){
+            for (int y = yEnd - yRange/2; y < yEnd + yRange/2; y++){
+                System.out.println(y + " " + x);
+            }
+        }
+        System.out.println("Checking Right");
+        for (int y = yStart - yRange/2; y < yStart + yRange/2; y++){
+            for (int x = xEnd - xRange/2; x < xEnd + xRange/2; x++){
+                System.out.println(y + " " + x);
+            }
+        }
+
+        //int packedInt = img.getRGB(x,y);
+        //Color color = new Color(packedInt, true);
+        //System.out.println(color);
+
+
+
+        return true;
+        }
     }
-}
