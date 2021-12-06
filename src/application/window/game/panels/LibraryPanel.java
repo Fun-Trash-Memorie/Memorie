@@ -52,7 +52,11 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         b_cam.setBackground(buttonColor);
         b_cam.setFont(buttonFont);
         b_cam.addActionListener(e -> {
-            Main.cam = new Cam();
+            try {
+                Main.cam = new Cam();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             try {
                 Main.cam.startCam();
             } catch (CvException | IOException cve) {
