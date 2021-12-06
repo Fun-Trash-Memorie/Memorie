@@ -22,6 +22,7 @@ public interface ConstructionHelper {
     int header_height = hp_height;
 
     int bottomFiller = 40;
+    int rightFiller = 15;
 
     Font headFont = new Font("Comic Sans MS", Font.BOLD, (int)(header_width/4.2));
     Color headColor = new Color(200, 100, 0);

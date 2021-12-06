@@ -26,7 +26,7 @@ public class Cam extends JFrame {
 
     private VideoCapture cap;
     private Mat image;
-    
+
     private BufferedImage img;
 
     private MatOfByte buf;
@@ -64,8 +64,9 @@ public class Cam extends JFrame {
                 CAPTURE_BTN.setBackground(Color.gray);
                 Main.soundSystem = new SoundSystem("KameraKlickSound.wav");
             }
+
             @Override
-            public void mouseReleased(MouseEvent  e) {
+            public void mouseReleased(MouseEvent e) {
                 CAPTURE_BTN.setBackground(Color.ORANGE);
             }
         });
@@ -82,8 +83,9 @@ public class Cam extends JFrame {
                 EXIT_BTN.setBackground(Color.gray);
 
             }
+
             @Override
-            public void mouseReleased(MouseEvent  e) {
+            public void mouseReleased(MouseEvent e) {
                 EXIT_BTN.setBackground(Color.LIGHT_GRAY);
                 ebClicked = true;
                 Main.cam.dispose();
@@ -103,7 +105,7 @@ public class Cam extends JFrame {
                 image.release();
                 cap.release();
                 buf.release();
-                cam=false;
+                cam = false;
                 System.out.println("Cam released");
             }
         });
@@ -115,15 +117,16 @@ public class Cam extends JFrame {
 
         cap = new VideoCapture(0);
         image = new Mat();
-        new Thread(){
-        byte[] imageData;
+        new Thread() {
+            byte[] imageData;
 
-        ImageIcon icon;
-                public void run(){
+            ImageIcon icon;
+
+            public void run() {
                 boolean cam = Main.cam.cam;
-                while(cam) {
+                while (cam) {
                     cap.read(image);
-                    Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2GRAY, 0);
+                    //Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2GRAY, 0);
                     buf = new MatOfByte();
                     try {
                         Imgcodecs.imencode(".jpg", image, buf);
@@ -147,6 +150,11 @@ public class Cam extends JFrame {
                         String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
                         Imgcodecs.imwrite("img/" + name + ".jpg", image);
                         cbClicked = false;
+                        try {
+                            Main.libraryPanel.initLib();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
             /*
             if(isMatching(name)){
                 System.out.println("Match!");
@@ -154,7 +162,7 @@ public class Cam extends JFrame {
                 cam = false;
             }*/
                     }
-                    if (ebClicked){
+                    if (ebClicked) {
                         imageData = null;
                         image.release();
                         cap.release();
@@ -171,29 +179,29 @@ public class Cam extends JFrame {
     private boolean isMatching(String name) throws IOException {
         img = ImageIO.read(new File("img/" + name + ".jpg"));
 
-        int xRange = 20, yRange = 20, xStart = img.getWidth()/8, xEnd = img.getWidth()-xStart, yStart = img.getHeight()/8, yEnd = img.getHeight()-yStart;
+        int xRange = 20, yRange = 20, xStart = img.getWidth() / 8, xEnd = img.getWidth() - xStart, yStart = img.getHeight() / 8, yEnd = img.getHeight() - yStart;
 
         System.out.println("Checking Top");
-        for (int x = xStart - xRange/2; x < xEnd + xRange/2; x++){
-            for (int y = yStart - yRange/2; y < yStart + yRange/2; y++){
+        for (int x = xStart - xRange / 2; x < xEnd + xRange / 2; x++) {
+            for (int y = yStart - yRange / 2; y < yStart + yRange / 2; y++) {
                 System.out.println(y + " " + x);
             }
         }
         System.out.println("Checking Left");
-        for (int y = yStart - yRange/2; y < yEnd + yRange/2; y++){
-            for (int x = xStart - xRange/2; x < xStart + xRange/2; x++){
+        for (int y = yStart - yRange / 2; y < yEnd + yRange / 2; y++) {
+            for (int x = xStart - xRange / 2; x < xStart + xRange / 2; x++) {
                 System.out.println(y + " " + x);
             }
         }
         System.out.println("Checking Bottom");
-        for (int x = xStart - xRange/2; x < xEnd + xRange/2; x++){
-            for (int y = yEnd - yRange/2; y < yEnd + yRange/2; y++){
+        for (int x = xStart - xRange / 2; x < xEnd + xRange / 2; x++) {
+            for (int y = yEnd - yRange / 2; y < yEnd + yRange / 2; y++) {
                 System.out.println(y + " " + x);
             }
         }
         System.out.println("Checking Right");
-        for (int y = yStart - yRange/2; y < yStart + yRange/2; y++){
-            for (int x = xEnd - xRange/2; x < xEnd + xRange/2; x++){
+        for (int y = yStart - yRange / 2; y < yStart + yRange / 2; y++) {
+            for (int x = xEnd - xRange / 2; x < xEnd + xRange / 2; x++) {
                 System.out.println(y + " " + x);
             }
         }
@@ -203,7 +211,6 @@ public class Cam extends JFrame {
         //System.out.println(color);
 
 
-
         return true;
-        }
     }
+}
