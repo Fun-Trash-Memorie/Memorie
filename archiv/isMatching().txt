@@ -1,0 +1,66 @@
+private boolean isMatching(String name) throws IOException {
+        img = ImageIO.read(new File("img/" + name + ".jpg"));
+
+        int Range = 20, xStart = img.getWidth() / 8, xEnd = img.getWidth() - xStart, yStart = img.getHeight() / 8, yEnd = img.getHeight() - yStart;
+        boolean[] top_match = new boolean[xEnd+Range-xStart-Range];
+        int count = 0;
+
+        System.out.println("Checking Top");
+        for (int x = xStart - Range / 2; x < xEnd + Range / 2; x++) {
+            top_match[count] = false;
+            for (int y = yStart - Range / 2; y < yStart + Range / 2; y++) {
+                if (!top_match[count]) {
+                    int pixel = img.getRGB(x, y);
+                    Color c = new Color(pixel, true);
+
+                    for (int r = 200; r <= 255; r++) {
+                        for (int b = 0; b <= 25; b++) {
+                            for (int g = 0; g <= 25; g++) {
+
+                                if (c.getRed() == r && c.getBlue() == b && c.getGreen() == g) {
+                                    top_match[count] = true;
+                                    System.out.println(y + " " + x);
+                                }
+
+                            }
+                        }
+                    }
+                }
+                count++;
+            }
+        }
+
+        int matches = 0;
+
+        for (Boolean match : top_match) {
+            if (match) matches++;
+        }
+
+        if (matches == top_match.length) return true;
+        /*
+        System.out.println("Checking Left");
+        for (int y = yStart - Range / 2; y < yEnd + Range / 2; y++) {
+            for (int x = xStart - Range / 2; x < xStart + Range / 2; x++) {
+                System.out.println(y + " " + x);
+            }
+        }
+        System.out.println("Checking Bottom");
+        for (int x = xStart - Range / 2; x < xEnd + Range / 2; x++) {
+            for (int y = yEnd - Range / 2; y < yEnd + Range / 2; y++) {
+                System.out.println(y + " " + x);
+            }
+        }
+        System.out.println("Checking Right");
+        for (int y = yStart - Range / 2; y < yStart + Range / 2; y++) {
+            for (int x = xEnd - Range / 2; x < xEnd + Range / 2; x++) {
+                System.out.println(y + " " + x);
+            }
+        }
+*/
+        //int packedInt = img.getRGB(x,y);
+        //Color color = new Color(packedInt, true);
+        //System.out.println(color);
+
+
+        return true;
+    }

@@ -2,59 +2,81 @@ package application.camera;
 
 import application.Main;
 import application.sound.SoundSystem;
+import application.window.game.ConstructionHelper;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
+import org.w3c.dom.css.RGBColor;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class Cam extends JFrame {
+public class Cam extends JFrame implements ConstructionHelper {
 
+    private final JPanel MAIN_PANEL;
+    private final JPanel BTN_PANEL;
     private final JLabel CAM_LBL;
     private final JButton CAPTURE_BTN, EXIT_BTN;
 
     private VideoCapture cap;
     private Mat image;
-    
     private BufferedImage img;
-
     private MatOfByte buf;
 
     private boolean cbClicked = false, ebClicked = false, cam = true;
 
-    public Cam() {
+    private final BufferedImage filter_overlay;
 
-        setLayout(new BorderLayout());
+    public Cam() throws IOException {
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setPreferredSize(new Dimension(640, 720));
-        mainPanel.setBackground(Color.DARK_GRAY);
-        add(mainPanel);
+
+        filter_overlay = ImageIO.read(new File("src-img/Filter_Overlay.png"));
+
+        setSize(new Dimension(640 + 2*margin + 2*padding + rightFiller, 580 + 2*margin + 5*padding + bottomFiller));
+        setBackground(bg_color1);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        MAIN_PANEL = new JPanel();
+        MAIN_PANEL.setBounds(margin, margin, 640 + 2*padding, 580 + 5*padding);
+        MAIN_PANEL.setBackground(bg_color2);
+        MAIN_PANEL.setLayout(null);
+        add(MAIN_PANEL);
+
+        JButton capBTN = new JButton(new ImageIcon(filter_overlay));
+        capBTN.setBounds(116, 36, 408, 408);
+        capBTN.setOpaque(false);
+        capBTN.setContentAreaFilled(false);
+        capBTN.setBorderPainted(false);
 
         CAM_LBL = new JLabel();
-        CAM_LBL.setPreferredSize(new Dimension(640, 480));
-        CAM_LBL.setBackground(Color.DARK_GRAY);
-        mainPanel.add(CAM_LBL, BorderLayout.NORTH);
+        CAM_LBL.setBounds(padding, padding, 640, 480);
+        CAM_LBL.setBackground(bg_color1);
+        CAM_LBL.add(capBTN);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BorderLayout());
-        buttonPanel.setBackground(Color.lightGray);
-        buttonPanel.setPreferredSize(new Dimension(640, 100));
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        MAIN_PANEL.add(CAM_LBL);
+
+        BTN_PANEL = new JPanel();
+        BTN_PANEL.setLayout(null);
+        BTN_PANEL.setBackground(bg_color1);
+        BTN_PANEL.setBounds(padding, 2*padding + 480, 640, 100 + 3*padding);
+        MAIN_PANEL.add(BTN_PANEL);
 
         CAPTURE_BTN = new JButton("Klick!");
-        CAPTURE_BTN.setPreferredSize(new Dimension(200, 50));
+        CAPTURE_BTN.setBounds(padding, padding, 200, 50);
 
         CAPTURE_BTN.setBackground(Color.ORANGE);
         CAPTURE_BTN.addActionListener(e -> cbClicked = true);
@@ -64,15 +86,16 @@ public class Cam extends JFrame {
                 CAPTURE_BTN.setBackground(Color.gray);
                 Main.soundSystem = new SoundSystem("KameraKlickSound.wav");
             }
+
             @Override
-            public void mouseReleased(MouseEvent  e) {
+            public void mouseReleased(MouseEvent e) {
                 CAPTURE_BTN.setBackground(Color.ORANGE);
             }
         });
-        buttonPanel.add(CAPTURE_BTN, BorderLayout.NORTH);
+        BTN_PANEL.add(CAPTURE_BTN, BorderLayout.NORTH);
 
         EXIT_BTN = new JButton("Schließen");
-        EXIT_BTN.setPreferredSize(new Dimension(200, 50));
+        EXIT_BTN.setBounds(padding, 2*padding + 50, 200, 50);
         EXIT_BTN.setBackground(Color.LIGHT_GRAY);
         EXIT_BTN.addActionListener(e -> {
         });
@@ -82,19 +105,16 @@ public class Cam extends JFrame {
                 EXIT_BTN.setBackground(Color.gray);
 
             }
+
             @Override
-            public void mouseReleased(MouseEvent  e) {
+            public void mouseReleased(MouseEvent e) {
                 EXIT_BTN.setBackground(Color.LIGHT_GRAY);
                 ebClicked = true;
                 Main.cam.dispose();
             }
         });
-        buttonPanel.add(EXIT_BTN, BorderLayout.SOUTH);
+        BTN_PANEL.add(EXIT_BTN);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(640, 720));
-        setLocationRelativeTo(null);
-        setBackground(Color.LIGHT_GRAY);
         setVisible(true);
 
         addWindowListener(new WindowAdapter() {
@@ -103,7 +123,7 @@ public class Cam extends JFrame {
                 image.release();
                 cap.release();
                 buf.release();
-                cam=false;
+                cam = false;
                 System.out.println("Cam released");
             }
         });
@@ -115,15 +135,15 @@ public class Cam extends JFrame {
 
         cap = new VideoCapture(0);
         image = new Mat();
-        new Thread(){
-        byte[] imageData;
+        new Thread() {
+            byte[] imageData;
+            ImageIcon icon;
 
-        ImageIcon icon;
-                public void run(){
+            public void run() {
                 boolean cam = Main.cam.cam;
-                while(cam) {
+                while (cam) {
                     cap.read(image);
-                    Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2GRAY, 0);
+                    //Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2GRAY, 0);
                     buf = new MatOfByte();
                     try {
                         Imgcodecs.imencode(".jpg", image, buf);
@@ -133,6 +153,7 @@ public class Cam extends JFrame {
                         icon = new ImageIcon(imageData);
 
                         CAM_LBL.setIcon(icon);
+                        //CAM_LBL.setBounds(padding, padding, icon.getIconWidth(), icon.getIconHeight());
 
                     } catch (Exception e) {
                         System.err.println("Keine Kamera gefunden. Show Stack-trace?    [y][n]");
@@ -144,17 +165,38 @@ public class Cam extends JFrame {
                     }
 
                     if (cbClicked) {
-                        String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
-                        Imgcodecs.imwrite("img/" + name + ".jpg", image);
-                        cbClicked = false;
-            /*
-            if(isMatching(name)){
-                System.out.println("Match!");
+                        CAPTURE_BTN.setEnabled(false);
 
-                cam = false;
-            }*/
+                        InputStream in = new ByteArrayInputStream(buf.toArray());
+                        try {
+                            img = ImageIO.read(in);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (isMatching(img)) {
+
+                            BufferedImage subimg = img.getSubimage((640-400)/2, (480-400)/2, 400, 400);
+
+                            byte[] pixels = ((DataBufferByte) subimg.getRaster().getDataBuffer()).getData();
+                            image.release();
+                            image.put(0, 0, pixels);
+
+                            String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
+                            Imgcodecs.imwrite("img/" + name + ".jpg", image);
+                        }
+
+
+
+                        cbClicked = false;
+                        CAPTURE_BTN.setEnabled(true);
+                        try {
+                            Main.libraryPanel.initLib();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    if (ebClicked){
+                    if (ebClicked) {
                         imageData = null;
                         image.release();
                         cap.release();
@@ -168,42 +210,58 @@ public class Cam extends JFrame {
 
     }
 
-    private boolean isMatching(String name) throws IOException {
-        img = ImageIO.read(new File("img/" + name + ".jpg"));
 
-        int xRange = 20, yRange = 20, xStart = img.getWidth()/8, xEnd = img.getWidth()-xStart, yStart = img.getHeight()/8, yEnd = img.getHeight()-yStart;
 
-        System.out.println("Checking Top");
-        for (int x = xStart - xRange/2; x < xEnd + xRange/2; x++){
-            for (int y = yStart - yRange/2; y < yStart + yRange/2; y++){
-                System.out.println(y + " " + x);
+    private boolean isMatching(BufferedImage image) {
+
+        int cap_width = 640;
+        int cap_height = 480;
+
+        int x = filter_overlay.getWidth();  // 408px
+        int y = filter_overlay.getHeight(); // 408px
+
+        BufferedImage filter = filter_overlay;
+        BufferedImage img = image;
+
+        boolean match = false;
+        int matches = 0;
+        //Color matchColor;
+
+        for (int i = (cap_width-x)/2; i < x; i++) {
+            for (int j = (cap_height-y)/2; j < y; j++) {
+                int f_pixel = filter.getRGB(i, j);
+                Color f_c = new Color(f_pixel, true);
+
+                int pixel = img.getRGB(i, j);
+                Color c = new Color(pixel, true);
+
+                System.out.println(c.getRed() + " " + c.getGreen() + " " + c.getBlue());
+
+                if (f_c.getRed() > 200) {
+                    for (int r = f_c.getRed(); r >= 170; r--) {
+                        for (int g = f_c.getGreen(); g <= 120; g++) {
+                            for (int b = f_c.getBlue(); b <= 120; b++) {
+                                if (r == c.getRed() && g == c.getGreen() && b == c.getBlue()) {
+                                    //matchColor = new Color(r, g, b);
+                                    match = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (match) {
+                        matches++;
+                        match = false;
+                    }
+                }
             }
         }
-        System.out.println("Checking Left");
-        for (int y = yStart - yRange/2; y < yEnd + yRange/2; y++){
-            for (int x = xStart - xRange/2; x < xStart + xRange/2; x++){
-                System.out.println(y + " " + x);
-            }
-        }
-        System.out.println("Checking Bottom");
-        for (int x = xStart - xRange/2; x < xEnd + xRange/2; x++){
-            for (int y = yEnd - yRange/2; y < yEnd + yRange/2; y++){
-                System.out.println(y + " " + x);
-            }
-        }
-        System.out.println("Checking Right");
-        for (int y = yStart - yRange/2; y < yStart + yRange/2; y++){
-            for (int x = xEnd - xRange/2; x < xEnd + xRange/2; x++){
-                System.out.println(y + " " + x);
-            }
-        }
-
-        //int packedInt = img.getRGB(x,y);
-        //Color color = new Color(packedInt, true);
-        //System.out.println(color);
-
-
-
-        return true;
-        }
+        System.out.println(matches);
+        if (matches > 4000)
+            return true;
+        else
+            return false;
     }
+
+
+}

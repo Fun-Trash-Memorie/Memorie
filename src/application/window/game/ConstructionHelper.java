@@ -9,6 +9,7 @@ public interface ConstructionHelper {
     int width = (int)(gd.getDisplayMode().getWidth() / 1.5);
     int height = (int)(gd.getDisplayMode().getHeight() / 1.5);
 
+    int margin = 5;
     int padding = 10;
 
     int btn_width = 400;
@@ -21,6 +22,7 @@ public interface ConstructionHelper {
     int header_height = hp_height;
 
     int bottomFiller = 40;
+    int rightFiller = 15;
 
     Font headFont = new Font("Comic Sans MS", Font.BOLD, (int)(header_width/4.2));
     Color headColor = new Color(200, 100, 0);
