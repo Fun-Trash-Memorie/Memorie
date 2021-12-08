@@ -52,7 +52,7 @@ public class ShaderProgram {
     int shaderProgramID;
     // GL2ES2 is a base that can be used in other GL profiles as well,
     // e.g. GL3 is a subinterface form GL2E2.
-    GL2ES2 gl;
+    final GL2ES2 gl;
 
     /**
      * Construct a shader program object for a given OpenGL context.
@@ -152,7 +152,7 @@ public class ShaderProgram {
             gl.glGetShaderiv(shader, GL2ES2.GL_INFO_LOG_LENGTH, logLength, 0);
 
             byte[] log = new byte[logLength[0]];
-            gl.glGetShaderInfoLog(shader, logLength[0], (int[]) null, 0, log, 0);
+            gl.glGetShaderInfoLog(shader, logLength[0], null, 0, log, 0);
 
             System.err.println("Error compiling shader: " + new String(log));
             System.exit(1);

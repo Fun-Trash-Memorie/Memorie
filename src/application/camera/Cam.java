@@ -128,7 +128,7 @@ public class Cam extends JFrame implements ConstructionHelper {
         });
     }
 
-    public void startCam() throws IOException {
+    public void startCam() {
 
         System.out.println("Cam gestartet");
 
@@ -182,7 +182,7 @@ public class Cam extends JFrame implements ConstructionHelper {
                             cropImage.put(0, 0, pixels);
 
                             String name = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date());
-                            
+
                             try {
                                 ImageIO.write(subimg, "jpg", new File("img/" + name + ".jpg"));
                             } catch (IOException e) {
@@ -190,12 +190,10 @@ public class Cam extends JFrame implements ConstructionHelper {
                             }
                         }
 
-
-
                         cbClicked = false;
                         CAPTURE_BTN.setEnabled(true);
                         try {
-                            Main.libraryPanel.initLib();
+                            Main.libraryPanel.initLib(Main.libraryPanel.getCurrentPage());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -203,6 +201,7 @@ public class Cam extends JFrame implements ConstructionHelper {
                     if (ebClicked) {
                         imageData = null;
                         image.release();
+                        cropImage.release();
                         cap.release();
                         buf.release();
                         cam = false;
@@ -226,8 +225,7 @@ public class Cam extends JFrame implements ConstructionHelper {
 
         boolean match = false;
         int matches = 0;
-        //Color matchColor;
-        int z = 0;
+
         for (int i = (cap_width-x)/2; i < x; i++) {
             for (int j = (cap_height-y)/2; j < y; j++) {
                 int f_pixel = filter_overlay.getRGB(i, j);
@@ -236,29 +234,15 @@ public class Cam extends JFrame implements ConstructionHelper {
                 int pixel = image.getRGB(i, j);
                 Color c = new Color(pixel, true);
 
-                z++;
                 //System.out.println(i + " " + j);
                 //System.out.println(f_c.getRed() + " " + f_c.getGreen() + " " + f_c.getBlue());
                 if (f_c.getRed() == 229) {
 
                     //System.out.println(c.getRed() + " " + c.getGreen() + " " + c.getBlue());
 
-                    if (c.getRed() > c.getGreen() && c.getRed() > c.getBlue()) {
+                    if (c.getRed()-10 > c.getGreen() && c.getRed()-10 > c.getBlue()) {
                         match = true;
                     }
-
-                    /*
-                    for (int r = f_c.getRed(); r >= 170; r--) {
-                        for (int g = f_c.getGreen(); g <= 120; g++) {
-                            for (int b = f_c.getBlue(); b <= 120; b++) {
-
-                                if (r == c.getRed() && g == c.getGreen() && b == c.getBlue()) {
-                                    //matchColor = new Color(r, g, b);
-                                    match = true;
-                                }
-                            }
-                        }
-                    }*/
 
                     if (match) {
                         matches++;
@@ -269,10 +253,7 @@ public class Cam extends JFrame implements ConstructionHelper {
         }
         System.out.println(matches);
         System.out.println(filter_overlay.getWidth() + " " + filter_overlay.getHeight());
-        if (matches > 1000)
-            return true;
-        else
-            return false;
+        return matches > 1000;
     }
 
 

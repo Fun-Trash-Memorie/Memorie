@@ -14,7 +14,7 @@ public class Main {
 
     public static Cam cam;
     public static SoundSystem soundSystem;
-    public static ArrayList<Thread> soundThreads = new ArrayList<>();
+    public final static ArrayList<Thread> SOUND_THREADS = new ArrayList<>();
     public static int soundIndex = -1;
     public static MainMenuPanel mainMenuPanel;
     public static GameSelectPanel gameSelectPanel;

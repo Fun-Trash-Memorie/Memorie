@@ -19,15 +19,11 @@ public class SoundSystem {
     // jedem SoundSystem wird seine .wav Datei mitgegeben
     public SoundSystem(String wav) {
         Main.soundIndex++;
-        Main.soundThreads.add(new SoundThread());
+        Main.SOUND_THREADS.add(new SoundThread());
         SoundSystem.wav = wav;
 
 
-        Main.soundThreads.get(Main.soundIndex).start();
-    }
-
-    // Method to play the audio
-    public void play() {
+        Main.SOUND_THREADS.get(Main.soundIndex).start();
     }
 
     public static void setVolume(int volume)
