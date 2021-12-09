@@ -19,9 +19,11 @@ import java.util.Scanner;
 
 public class LibraryPanel extends JPanel implements ConstructionHelper {
 
-    private final JButton b_cam, b_back;
+    private static int currentPage = 1;
 
-    private final JPanel libPanel;
+    private final JButton CAM_BTN, BACK_BTN, NEXTPAGE_BTN, PREVPAGE_BTN;
+
+    private final JPanel LIB_PNL;
 
 
     private final int LIB_WIDTH = width-rightFiller-2*margin;
@@ -29,29 +31,26 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
 
     private final int PIC_SIZE = (LIB_WIDTH - 2*margin - 4*padding)/5;
 
+    private final int PICS_ONPAGE = 10;
+
     public LibraryPanel() throws IOException {
 
         setBounds(0, 0, width, height);
-        setBackground(bg_color1); //Der Hintergrund wird auf den Farbwert dunkelgrau gestellt
-        setLayout(null);  //Das Layout wird als Border-Layout festgelegt
+        setBackground(bg_color1);
+        setLayout(null);
 
 
-        libPanel = new JPanel();
-        libPanel.setBackground(bg_color2);
-        libPanel.setBounds(margin, margin, LIB_WIDTH, LIB_HEIGHT);
-        libPanel.setLayout(null);
-
-        initLib();
+        LIB_PNL = new JPanel();
+        LIB_PNL.setBackground(bg_color2);
+        LIB_PNL.setBounds(margin, margin, LIB_WIDTH, LIB_HEIGHT);
+        LIB_PNL.setLayout(null);
 
 
-
-
-
-        b_cam = new JButton("Cam");
-        b_cam.setBounds(width/2-btn_width/2, height-btn_height-bottomFiller-margin, btn_width, btn_height);
-        b_cam.setBackground(buttonColor);
-        b_cam.setFont(buttonFont);
-        b_cam.addActionListener(e -> {
+        CAM_BTN = new JButton("Cam");
+        CAM_BTN.setBounds(width/2-btn_width/2, height-btn_height-bottomFiller-margin, btn_width, btn_height);
+        CAM_BTN.setBackground(buttonColor);
+        CAM_BTN.setFont(buttonFont);
+        CAM_BTN.addActionListener(e -> {
             try {
                 Main.cam = new Cam();
             } catch (IOException ex) {
@@ -59,7 +58,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
             try {
                 Main.cam.startCam();
-            } catch (CvException | IOException cve) {
+            } catch (CvException cve) {
                 System.err.println("Cv-Exception. Show Stack-Trace?  [y][n]");
                 Scanner scanner = new Scanner(System.in);
                 String s = scanner.nextLine();
@@ -68,22 +67,22 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
                 scanner.close();
             }
         });
-        b_cam.addMouseListener(new MouseAdapter() {
+        CAM_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                b_cam.setText(">Cam<");
+                CAM_BTN.setText(">Cam<");
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                b_cam.setText("Cam");
+                CAM_BTN.setText("Cam");
             }
         });
 
-        b_back = new JButton("Zurück");
-        b_back.setBounds(margin, height-btn_height-bottomFiller-margin, (int)(btn_width/1.5), btn_height);
-        b_back.setBackground(buttonColor);
-        b_back.setFont(buttonFont);
-        b_back.addActionListener(e -> {
+        BACK_BTN = new JButton("Zurück");
+        BACK_BTN.setBounds(margin, height-btn_height-bottomFiller-margin, (int)(btn_width/1.5), btn_height);
+        BACK_BTN.setBackground(buttonColor);
+        BACK_BTN.setFont(buttonFont);
+        BACK_BTN.addActionListener(e -> {
             System.out.println("Zurück wurde ausgewählt.");
 
             Main.libraryPanel.setVisible(false);
@@ -92,27 +91,74 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             Main.mainMenuPanel.setVisible(true);
             Main.window.add(Main.mainMenuPanel);
         });
-        b_back.addMouseListener(new MouseAdapter() {
+        BACK_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                b_back.setText(">Zurück<");
+                BACK_BTN.setText(">Zurück<");
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                b_back.setText("Zurück");
+                BACK_BTN.setText("Zurück");
             }
         });
 
-        add(libPanel);
-        add(b_back);
-        add(b_cam);
+        NEXTPAGE_BTN = new JButton(">");
+        NEXTPAGE_BTN.setBounds(width - margin - rightFiller - btn_width/2, height - bottomFiller - margin - btn_height, btn_width/2, btn_height);
+        NEXTPAGE_BTN.setBackground(buttonColor);
+        NEXTPAGE_BTN.addActionListener(e -> {
+            try {
+                initLib(currentPage + 1);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        NEXTPAGE_BTN.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (CAM_BTN.isEnabled())
+                    NEXTPAGE_BTN.setText("> > <");
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                    NEXTPAGE_BTN.setText(">");
+            }
+        });
 
+        PREVPAGE_BTN = new JButton("<");
+        PREVPAGE_BTN.setBounds(width - margin - rightFiller - btn_width - margin, height - bottomFiller - margin - btn_height, btn_width/2, btn_height);
+        PREVPAGE_BTN.setBackground(buttonColor);
+        PREVPAGE_BTN.addActionListener(e -> {
+            try {
+                initLib(currentPage - 1);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        PREVPAGE_BTN.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (CAM_BTN.isEnabled())
+                    PREVPAGE_BTN.setText("> < <");
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                PREVPAGE_BTN.setText("<");
+            }
+        });
 
+        add(NEXTPAGE_BTN);
+        add(PREVPAGE_BTN);
+        add(LIB_PNL);
+        add(BACK_BTN);
+        add(CAM_BTN);
+
+        initLib(1);
         setVisible(true);
     }
 
-    public void initLib() throws IOException {
-        libPanel.removeAll();
+    public void initLib(int page) throws IOException {
+        currentPage = page;
+        LIB_PNL.removeAll();
         ArrayList<BufferedImage> liblist_BI = new ArrayList<>();
         ArrayList<JButton> liblist_BTN = new ArrayList<>();
 
@@ -122,10 +168,9 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         pathnames = dir.list();
 
         for (int i = 0; i < Objects.requireNonNull(pathnames).length; i++) {
-            System.out.println(pathnames[i]);
+            //System.out.println(pathnames[i]);
 
             BufferedImage bi = ImageIO.read(new File("img/" + pathnames[i]));
-            //bi.getScaledInstance(PIC_SIZE, PIC_SIZE, Image.SCALE_DEFAULT);
             liblist_BI.add(resizeImage(bi, PIC_SIZE, PIC_SIZE));
 
         }
@@ -136,19 +181,26 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             JButton b = new JButton(new ImageIcon(bi));
             liblist_BTN.add(b);
 
-            if (count <= 10) {
-                if (count <= 5) {
-                    b.setBounds(margin + padding*(count-1) + PIC_SIZE*(count-1), margin, PIC_SIZE, PIC_SIZE);
+            if (count > PICS_ONPAGE*(page-1) && count <= PICS_ONPAGE*page) {
+                if (count <= PICS_ONPAGE*(page-1) + PICS_ONPAGE/2) {
+
+                    b.setBounds(margin + padding*(count-1-PICS_ONPAGE*(page-1)) + PIC_SIZE*(count-1-PICS_ONPAGE*(page-1)), margin, PIC_SIZE, PIC_SIZE);
+
                 } else {
-                    int i = count - 5;
+                    int i = count-5-PICS_ONPAGE*(page-1);
                     b.setBounds(margin + padding*(i-1) + PIC_SIZE*(i-1), margin + padding + PIC_SIZE, PIC_SIZE, PIC_SIZE);
+
                 }
-            } else {
-                System.out.println("Image number " + count + " did not fit on page.");
             }
 
-            libPanel.add(b);
-            libPanel.repaint();
+
+            NEXTPAGE_BTN.setEnabled(liblist_BI.size() > page * 10);
+
+            PREVPAGE_BTN.setEnabled(page != 1);
+
+
+            LIB_PNL.add(b);
+            LIB_PNL.repaint();
         }
     }
 
@@ -158,10 +210,17 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
      *
      */
     private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+
         BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+
         Graphics2D graphics2D = resizedImage.createGraphics();
         graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
         graphics2D.dispose();
+
         return resizedImage;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
     }
 }

@@ -1,0 +1,10 @@
+for (int r = f_c.getRed(); r >= 170; r--) {
+    for (int g = f_c.getGreen(); g <= 120; g++) {
+        for (int b = f_c.getBlue(); b <= 120; b++) {
+
+            if (r == c.getRed() && g == c.getGreen() && b == c.getBlue()) {
+                match = true;
+            }
+        }
+    }
+}

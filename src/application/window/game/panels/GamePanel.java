@@ -1,6 +1,5 @@
 package application.window.game.panels;
 
-import application.Main;
 import application.window.game.ConstructionHelper;
 import application.window.game.rendering.Renderer;
 
@@ -10,7 +9,6 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class GamePanel extends JPanel implements ConstructionHelper {
 
