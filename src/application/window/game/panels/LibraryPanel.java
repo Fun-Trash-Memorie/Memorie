@@ -7,13 +7,17 @@ import org.opencv.core.CvException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -21,9 +25,13 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
 
     private static int currentPage = 1;
 
-    private final JButton CAM_BTN, BACK_BTN, NEXTPAGE_BTN, PREVPAGE_BTN;
+    private final JButton CAM_BTN, BACK_BTN, NEXTPAGE_BTN, PREVPAGE_BTN, EXPLORER_BTN;
 
     private final JPanel LIB_PNL;
+
+    private final JLabel INDEX_LBL;
+
+    private JFileChooser fileChooser;
 
 
     private final int LIB_WIDTH = width-rightFiller-2*margin;
@@ -32,6 +40,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
     private final int PIC_SIZE = (LIB_WIDTH - 2*margin - 4*padding)/5;
 
     private final int PICS_ONPAGE = 10;
+
 
     public LibraryPanel() throws IOException {
 
@@ -47,7 +56,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
 
 
         CAM_BTN = new JButton("Cam");
-        CAM_BTN.setBounds(width/2-btn_width/2, height-btn_height-bottomFiller-margin, btn_width, btn_height);
+        CAM_BTN.setBounds(width/2, height-btn_height-bottomFiller-margin, btn_width/2, btn_height);
         CAM_BTN.setBackground(buttonColor);
         CAM_BTN.setFont(buttonFont);
         CAM_BTN.addActionListener(e -> {
@@ -78,6 +87,42 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
         });
 
+        EXPLORER_BTN = new JButton("Explorer");
+        EXPLORER_BTN.setBounds(width/2 - (btn_width*2)/3 - padding, height-btn_height-bottomFiller-margin, (2*btn_width)/3, btn_height);
+        EXPLORER_BTN.setBackground(buttonColor);
+        EXPLORER_BTN.setFont(buttonFont);
+        EXPLORER_BTN.addActionListener(e -> {
+
+            fileChooser = new JFileChooser("c:/");
+            fileChooser.addChoosableFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    if (f.isDirectory()) {
+                        return true;
+                    } else {
+                        return f.getName().toLowerCase().endsWith(".jpg");
+                    }
+                }
+                @Override
+                public String getDescription() {
+                    return "JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)";
+                }
+            });
+
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                String selectedPath = fileChooser.getSelectedFile().getAbsolutePath();
+
+                System.out.println(selectedPath + " wurde geöffnet.");
+
+                try {
+                    Files.copy(selectedFile.toPath(), (new File("img/" + selectedFile.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
         BACK_BTN = new JButton("Zurück");
         BACK_BTN.setBounds(margin, height-btn_height-bottomFiller-margin, (int)(btn_width/1.5), btn_height);
         BACK_BTN.setBackground(buttonColor);
@@ -105,6 +150,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         NEXTPAGE_BTN = new JButton(">");
         NEXTPAGE_BTN.setBounds(width - margin - rightFiller - btn_width/2, height - bottomFiller - margin - btn_height, btn_width/2, btn_height);
         NEXTPAGE_BTN.setBackground(buttonColor);
+        NEXTPAGE_BTN.setFont(buttonFont);
         NEXTPAGE_BTN.addActionListener(e -> {
             try {
                 initLib(currentPage + 1);
@@ -127,6 +173,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         PREVPAGE_BTN = new JButton("<");
         PREVPAGE_BTN.setBounds(width - margin - rightFiller - btn_width - margin, height - bottomFiller - margin - btn_height, btn_width/2, btn_height);
         PREVPAGE_BTN.setBackground(buttonColor);
+        PREVPAGE_BTN.setFont(buttonFont);
         PREVPAGE_BTN.addActionListener(e -> {
             try {
                 initLib(currentPage - 1);
@@ -146,11 +193,18 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
         });
 
+        INDEX_LBL = new JLabel();
+        INDEX_LBL.setBounds(LIB_WIDTH / 2, padding*3 + PIC_SIZE*2, 15, 30);
+        INDEX_LBL.setBackground(bg_color2);
+        INDEX_LBL.setForeground(Color.WHITE);
+
+
         add(NEXTPAGE_BTN);
         add(PREVPAGE_BTN);
         add(LIB_PNL);
         add(BACK_BTN);
         add(CAM_BTN);
+        add(EXPLORER_BTN);
 
         initLib(1);
         setVisible(true);
@@ -158,6 +212,9 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
 
     public void initLib(int page) throws IOException {
         currentPage = page;
+
+        INDEX_LBL.setText(Integer.toString(currentPage));
+
         LIB_PNL.removeAll();
         ArrayList<BufferedImage> liblist_BI = new ArrayList<>();
         ArrayList<JButton> liblist_BTN = new ArrayList<>();
@@ -200,6 +257,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
 
 
             LIB_PNL.add(b);
+            LIB_PNL.add(INDEX_LBL);
             LIB_PNL.repaint();
         }
     }
