@@ -1,6 +1,7 @@
 package application.window.game.panels;
 
 import application.Main;
+import application.sound.SoundSystem;
 import application.window.game.ConstructionHelper;
 
 import javax.swing.*;
@@ -23,6 +24,7 @@ public class SettingPanel extends JPanel implements ConstructionHelper {
         b_back.setFont(buttonFont);
         b_back.addActionListener(e -> {
             System.out.println("Zurück wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("BackButtonTon.wav");
 
             Main.settingPanel.setVisible(false);
             Main.window.remove(Main.settingPanel);

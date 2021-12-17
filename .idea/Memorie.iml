@@ -8,10 +8,19 @@
       <sourceFolder url="file://$MODULE_DIR$/wav" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src-img" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="11 (2)" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="11 (4)" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="OpenCV 4.5.3" level="project" />
     <orderEntry type="library" name="OBJLoader 3.0.0" level="project" />
     <orderEntry type="library" name="JOGL 2.3.2" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/.jdks/jdk-11.0.2" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
