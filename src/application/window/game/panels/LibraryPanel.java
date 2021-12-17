@@ -2,6 +2,7 @@ package application.window.game.panels;
 
 import application.Main;
 import application.camera.Cam;
+import application.sound.SoundSystem;
 import application.window.game.ConstructionHelper;
 import org.opencv.core.CvException;
 
@@ -124,11 +125,13 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         });
 
         BACK_BTN = new JButton("Zurück");
+
         BACK_BTN.setBounds(margin, height-btn_height-bottomFiller-margin, (int)(btn_width/1.5), btn_height);
         BACK_BTN.setBackground(buttonColor);
         BACK_BTN.setFont(buttonFont);
         BACK_BTN.addActionListener(e -> {
             System.out.println("Zurück wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("BackButtonTon.wav");
 
             Main.libraryPanel.setVisible(false);
             Main.window.remove(Main.libraryPanel);
