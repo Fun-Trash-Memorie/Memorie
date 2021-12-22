@@ -1,7 +1,5 @@
 package application.window;
 
-import application.window.game.ConstructionHelper;
-
 import javax.swing.*;
 import java.awt.*;
 

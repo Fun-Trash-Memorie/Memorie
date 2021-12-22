@@ -1,10 +1,10 @@
 package application;
 
-import application.camera.Cam;
-import application.sound.SoundSystem;
-import application.window.Window;
+import application.game.camera.Cam;
+import application.game.panels.*;
+import application.game.sound.SoundSystem;
+import application.window.*;
 
-import application.window.game.panels.*;
 import org.opencv.core.Core;
 
 import java.io.IOException;
@@ -22,6 +22,7 @@ public class Main {
     public static SettingPanel settingPanel;
     public static GamePanel gamePanel;
     public static Window window;
+    public static SubWindow subWindow;
 
     public static void main(String[] args) throws IOException {
 
@@ -35,6 +36,7 @@ public class Main {
 
         //Fenster und Panels initialisieren (Game-Panel für später)
         window = new Window();
+        subWindow = new SubWindow("init");
         mainMenuPanel = new MainMenuPanel();
         gamePanel = new GamePanel();
         gameSelectPanel = new GameSelectPanel();

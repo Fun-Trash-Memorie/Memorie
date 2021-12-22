@@ -39,7 +39,7 @@ JOGL NEWT Applet Runner Special Keys:<br>
    <param name="code" value="com.jogamp.newt.awt.applet.JOGLNewtApplet1Run">
    <param name="archive" value="jar/gluegen-rt.jar,
                                 jar/jogl-all.jar,
-                                jar/jogl-test.jar">
+                                jar/jogl-application.test.jar">
    <param name="gl_event_listener_class" value="com.jogamp.opengl.test.junit.jogl.demos.es2.GearsES2">
    <param name="gl_profile" value="GL3">
    <param name="gl_swap_interval" value="1">
@@ -52,7 +52,7 @@ JOGL NEWT Applet Runner Special Keys:<br>
           pluginspage="http://java.sun.com/javase/downloads/ea.jsp"
           archive="jar/gluegen-rt.jar,
                    jar/jogl-all.jar,
-                   jar/jogl-test.jar"
+                   jar/jogl-application.test.jar"
           gl_event_listener_class="com.jogamp.opengl.test.junit.jogl.demos.es2.GearsES2"
           gl_profile="GL3"
           gl_swap_interval="1"
@@ -79,7 +79,7 @@ The applet above is instantiated with the following code:
    &lt;param name="code" value="com.jogamp.newt.awt.applet.JOGLNewtApplet1Run"&gt;
    &lt;param name="archive" value="jar/gluegen-rt.jar,
                                 jar/jogl-all.jar,
-                                jar/jogl-test.jar"&gt;
+                                jar/jogl-application.test.jar"&gt;
    &lt;param name="gl_event_listener_class" value="com.jogamp.opengl.test.junit.jogl.demos.es2.GearsES2"&gt;
    &lt;param name="gl_profile" value="GL3"&gt;
    &lt;param name="gl_swap_interval" value="1"&gt;
@@ -92,7 +92,7 @@ The applet above is instantiated with the following code:
           pluginspage="http://java.sun.com/javase/downloads/ea.jsp"
           archive="jar/gluegen-rt.jar,
                    jar/jogl-all.jar,
-                   jar/jogl-test.jar"
+                   jar/jogl-application.test.jar"
           gl_event_listener_class="com.jogamp.opengl.test.junit.jogl.demos.es2.GearsES2"
           gl_profile="GL3"
           gl_swap_interval="1"
@@ -108,7 +108,7 @@ The applet above is instantiated with the following code:
 </p>
 <p>
 <del>
-Note that the jogl-test.jar, which contains the GearsES2 class,
+Note that the jogl-application.test.jar, which contains the GearsES2 class,
 <B>does not need to be signed</B>! JogAmp Community signs
 jogl-all.jar and gluegen-rt.jar, which contain the
 JOGL's supporting classes; this is the only
@@ -119,8 +119,8 @@ Sadly, due to Oracle's Java Applet Plugin update 7u51,
 unsigned applets are no more allowed and effectively 
 lower the bar to create user applets with raised privileges.<br/>
 Hence JogAmp Community <b>signs</b> jogl-all.jar and gluegen-rt.jar, which contain the
-JOGL's supporting classes as well as jogl-test.jar, which contains the users implementing Applet class.<br/>
-jogl-test.jar's manifest file uses <i>Permissions: sandbox</i>
+JOGL's supporting classes as well as jogl-application.test.jar, which contains the users implementing Applet class.<br/>
+jogl-application.test.jar's manifest file uses <i>Permissions: sandbox</i>
 to <b>not raise privileges</b>.
 </p>
 

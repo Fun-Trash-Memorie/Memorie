@@ -43,9 +43,9 @@ to build or run a JOGL program look at:
     http://jogamp.org/wiki/index.php/Jogl_Tutorial
     http://jogamp.org/wiki/index.php/Jogl_FAQ
 
-You can verify the version of the build via the JOGL self test:
-    etc/test.sh   (Linux, FreeBSD, MacOSX, ..)
-    etc\test.bat  (Windows)
+You can verify the version of the build via the JOGL self application.test:
+    etc/application.test.sh   (Linux, FreeBSD, MacOSX, ..)
+    etc\application.test.bat  (Windows)
 
 You may also have a look at the (outdated) enclosed JOGL user guide, Userguide.html
 

@@ -123,7 +123,7 @@ Preparations:
     # rpm --force --upgrade openal-0.0.8-1.i586.rpm
     # rpm -i openal-devel-0.0.8-1.i586.rpm
 
-  Now test to make sure the RPMs are installed:
+  Now application.test to make sure the RPMs are installed:
 
     # rpm -qa | grep -i openal
     openal-0.0.8-1
@@ -136,7 +136,7 @@ Preparations:
     -- look at the build options with ./configure --help  
     -- configure it with./configure --enable-sdl --enable-vorbis [-enable-more]
        (see openal.spec for a full set)
-    -- build it with make && make test and run the tests
+    -- build it with make && make application.test and run the tests
     -- as root type make install
     -- add /usr/local/lib to you /etc/ld.so.conf and run ldconfig
 
@@ -182,7 +182,7 @@ appropriately-equipped machine by uncommenting the declaration of the
 To clean: ant clean
 To build: ant all (or just ant)
 To build docs: ant javadoc
-To test: ant runtests
+To application.test: ant runtests
 
 Release Info:
     Initial Release:  This release contains an implementation of the Java

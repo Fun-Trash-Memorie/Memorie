@@ -11,9 +11,9 @@ public void OpenWebcam()
         }
     }
 
+-----------------
 
-
-package application.window.game;
+package application.game;
 
 import application.Main;
 
@@ -42,4 +42,29 @@ public class GameThread extends Thread {
     }
 }
 
+
+
+--------------------
+
+BufferedImage screenshot_BI = new BufferedImage(Main.libraryPanel.getWidth(), Main.libraryPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+            ByteArrayOutputStream filter_baos = new ByteArrayOutputStream();
+            ByteArrayOutputStream screenshot_baos = new ByteArrayOutputStream();
+            try {
+                ImageIO.write(bufferedImage, "jpg", filter_baos);
+                ImageIO.write(screenshot_BI, "jpg", screenshot_baos);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            byte[] filter = filter_baos.toByteArray();
+            byte[] screenshot = screenshot_baos.toByteArray();
+
+            //byte[] filter = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+            //byte[] screenshot = ((DataBufferByte) screenshot_BI.getRaster().getDataBuffer()).getData();
+            System.out.println(Arrays.toString(filter) + "\n\n" + Arrays.toString(screenshot));
+            if (Main.cam.picMatcher(filter, screenshot)) {
+                System.out.println("Übereinstimmung gefunden!");
+            } else {
+                System.out.println("Keine Übereinstimmung gefunden!");
+            }
 
