@@ -1,4 +1,4 @@
-package application.camera;
+package application.game.camera;
 
 public class CamThread extends Thread {
 

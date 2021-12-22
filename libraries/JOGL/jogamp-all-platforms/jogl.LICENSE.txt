@@ -14,7 +14,7 @@ Below you find a detailed list of licenses used in this project.
 
 +++
 
-The content of folder 'make/lib' contains build- and test-time only 
+The content of folder 'make/lib' contains build- and application.test-time only
 Java binaries (JAR) to ease the build setup.
 Each JAR file has it's corresponding LICENSE file containing the 
 source location and license text. None of these binaries are contained in any way 
