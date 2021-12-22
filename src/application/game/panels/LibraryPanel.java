@@ -44,21 +44,23 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
 
     public LibraryPanel() throws IOException {
 
+        //Einstellungen für die Bildergalerie
         setBounds(0, 0, width, height);
         setBackground(bg_color1);
         setLayout(null);
 
-
+        // Panel für die Bilder wird erstellt
         LIB_PNL = new JPanel();
         LIB_PNL.setBackground(bg_color2);
         LIB_PNL.setBounds(margin, margin, LIB_WIDTH, LIB_HEIGHT);
         LIB_PNL.setLayout(null);
 
-
+        // Erstellen und Einstellen des Buttons "Cam"
         CAM_BTN = new JButton("Cam");
         CAM_BTN.setBounds(width/2, height-btn_height-bottomFiller-margin, btn_width/2, btn_height);
         CAM_BTN.setBackground(buttonColor);
         CAM_BTN.setFont(buttonFont);
+        // Befehl auf Knopfdruck: Das Kamera-Fenster wird geöffnet
         CAM_BTN.addActionListener(e -> {
             try {
                 Main.cam = new Cam();
@@ -76,6 +78,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
                 scanner.close();
             }
         });
+        // Hervorhebung des Textes beim Hovern
         CAM_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -87,12 +90,13 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
         });
 
+        //Erstellen und Einstellen des Buttons "Explorer"
         EXPLORER_BTN = new JButton("Explorer");
         EXPLORER_BTN.setBounds(width/2 - (btn_width*2)/3 - padding, height-btn_height-bottomFiller-margin, (2*btn_width)/3, btn_height);
         EXPLORER_BTN.setBackground(buttonColor);
         EXPLORER_BTN.setFont(buttonFont);
+        // Befehl auf Knopfdruck: Neues Fenster zum Einfügen neuer Bilder wird geöffnet
         EXPLORER_BTN.addActionListener(e -> {
-
             fileChooser = new JFileChooser("c:/");
             fileChooser.addChoosableFileFilter(new FileFilter() {
                 @Override
@@ -123,11 +127,13 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
         });
 
+        // Erstellen und Einstellen des Buttons "Zurück"
         BACK_BTN = new JButton("Zurück");
 
         BACK_BTN.setBounds(margin, height-btn_height-bottomFiller-margin, (int)(btn_width/1.5), btn_height);
         BACK_BTN.setBackground(buttonColor);
         BACK_BTN.setFont(buttonFont);
+        // Befehl auf Knopfdruck: Bildergalerie wird durch Hauptmenü ersetzt
         BACK_BTN.addActionListener(e -> {
             System.out.println("Zurück wurde ausgewählt.");
             Main.soundSystem = new SoundSystem("BackButtonTon.wav");
@@ -138,6 +144,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             Main.mainMenuPanel.setVisible(true);
             Main.window.add(Main.mainMenuPanel);
         });
+        // Hervorhebung des Textes beim Hovern
         BACK_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -149,10 +156,12 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
         });
 
+        // Erstellen und Einstellen des Buttons ">"
         NEXTPAGE_BTN = new JButton(">");
         NEXTPAGE_BTN.setBounds(width - margin - rightFiller - btn_width/2, height - bottomFiller - margin - btn_height, btn_width/2, btn_height);
         NEXTPAGE_BTN.setBackground(buttonColor);
         NEXTPAGE_BTN.setFont(buttonFont);
+        // Befehl auf Knopfdruck: Die nächste Seite der Bildergalerie wird angezeigt
         NEXTPAGE_BTN.addActionListener(e -> {
             try {
                 initLib(currentPage + 1);
@@ -160,6 +169,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
                 ex.printStackTrace();
             }
         });
+        // Hervorhebung des Textes beim Hovern
         NEXTPAGE_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -172,10 +182,12 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
         });
 
+        // Erstellen und Einstellen des Buttons "<"
         PREVPAGE_BTN = new JButton("<");
         PREVPAGE_BTN.setBounds(width - margin - rightFiller - btn_width - margin, height - bottomFiller - margin - btn_height, btn_width/2, btn_height);
         PREVPAGE_BTN.setBackground(buttonColor);
         PREVPAGE_BTN.setFont(buttonFont);
+        // Befehl auf Knopfdruck: Die vorherige Seite der Bildergalerie wird angezeigt
         PREVPAGE_BTN.addActionListener(e -> {
             try {
                 initLib(currentPage - 1);
@@ -183,6 +195,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
                 ex.printStackTrace();
             }
         });
+        // Hervorhebung des Textes beim Hovern
         PREVPAGE_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -195,12 +208,13 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
         });
 
+        // Label zum Anzeigen der aktuellen Seite wird erstellt
         INDEX_LBL = new JLabel();
         INDEX_LBL.setBounds(LIB_WIDTH / 2, padding*3 + PIC_SIZE*2, 15, 30);
         INDEX_LBL.setBackground(bg_color2);
         INDEX_LBL.setForeground(Color.WHITE);
 
-
+        // (fast) alle Inhalte der Bildergalerie werden eingefügt (Bilder im Bilder-Panel sowie die Seitenzahl kommen mit der Methode "initLib")
         add(NEXTPAGE_BTN);
         add(PREVPAGE_BTN);
         add(LIB_PNL);
@@ -212,20 +226,26 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         setVisible(true);
     }
 
+    // Bilder der aktuellen Seite werden geladen und die aktuelle Seitenzahl wird angezeigt
     public void initLib(int page) throws IOException {
-        currentPage = page;
 
+        // aktuelle Seitenzahl wird gespeichert
+        currentPage = page;
         INDEX_LBL.setText(Integer.toString(currentPage));
 
+        // aktuell angezeigte Bilder werden entfernt
         LIB_PNL.removeAll();
+
+        // zwei Listen werden erstellt: "liblist_BI" für die Bilder und "liblist_BTN" für die Buttons, auf denen nachher die Bilder dargestellt werden
         ArrayList<BufferedImage> liblist_BI = new ArrayList<>();
         ArrayList<JButton> liblist_BTN = new ArrayList<>();
 
+        // Pfad für die Bilder wird auf den "img" Ordner gestellt und Bildpfade werden in die "pathnames" Liste gespeichert
         File dir = new File("img");
         String[] pathnames;
-
         pathnames = dir.list();
 
+        // Bilder werden in die "liblist_BI" Liste gespeichert
         for (int i = 0; i < Objects.requireNonNull(pathnames).length; i++) {
             //System.out.println(pathnames[i]);
 
@@ -233,18 +253,24 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             liblist_BI.add(resizeImage(bi, PIC_SIZE, PIC_SIZE));
 
         }
+
+        // Buttons werden mit den Bildern in die Liste "liblist_BTN" eingefügt
         int count = 0;
         for (BufferedImage bi : liblist_BI) {
             count++;
 
+            // einzelner Button wird mit einem Bild erstellt
             JButton b = new JButton(new ImageIcon(bi));
+            // Befehl auf Knopfdruck: Bildansicht wird in einem neuen Fenster geöffnet
             b.addActionListener(e -> {
                 Main.window.setEnabled(false);
                 Main.subWindow = new PictureView(bi);
 
             });
+            // Button wird in die Liste "liblist_BTN" gespeichert
             liblist_BTN.add(b);
 
+            // Button wird in die richtige Position gebracht
             if (count > PICS_ONPAGE*(page-1) && count <= PICS_ONPAGE*page) {
                 if (count <= PICS_ONPAGE*(page-1) + PICS_ONPAGE/2) {
 
@@ -257,12 +283,11 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
                 }
             }
 
-
+            // Blättern der Seiten wird auf Verfügbarkeit überprüft
             NEXTPAGE_BTN.setEnabled(liblist_BI.size() > page * 10);
-
             PREVPAGE_BTN.setEnabled(page != 1);
 
-
+            // Seitenzahl sowie Bilder werden angezeigt
             LIB_PNL.add(b);
             LIB_PNL.add(INDEX_LBL);
             LIB_PNL.repaint();

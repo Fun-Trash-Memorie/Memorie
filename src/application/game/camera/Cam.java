@@ -39,9 +39,10 @@ public class Cam extends JFrame implements ConstructionHelper {
 
     public Cam() throws IOException {
 
-
+        //Rahmen für das Auschneiden des Bildes
         FILTER_OVERLAY = ImageIO.read(new File("src-img/Filter_Overlay.png"));
 
+        //Anpassungen für das Kamera-Fenster
         setSize(new Dimension(640 + 2*margin + 2*padding + rightFiller, 580 + 2*margin + 5*padding + bottomFiller));
         setBackground(bg_color1);
         setLayout(null);
@@ -49,36 +50,43 @@ public class Cam extends JFrame implements ConstructionHelper {
         setLocationRelativeTo(null);
         setResizable(false);
 
+        // Panel für das Kamerabild wird erstellt
         MAIN_PNL = new JPanel();
         MAIN_PNL.setBounds(margin, margin, 640 + 2*padding, 580 + 5*padding);
         MAIN_PNL.setBackground(bg_color2);
         MAIN_PNL.setLayout(null);
         add(MAIN_PNL);
 
+        // Rahmen zum Ausschneiden des Bildes wird erstellt
         JButton capBTN = new JButton(new ImageIcon(FILTER_OVERLAY));
         capBTN.setBounds(116, 36, 408, 408);
         capBTN.setOpaque(false);
         capBTN.setContentAreaFilled(false);
         capBTN.setBorderPainted(false);
 
+        // Label wird erstellt (wird später für den Kamera-Output benutzt)
         CAM_LBL = new JLabel();
         CAM_LBL.setBounds(padding, padding, 640, 480);
         CAM_LBL.setBackground(bg_color1);
-        CAM_LBL.add(capBTN);
 
+        // Panel für die Kamera wird mit Label ins Fenster eingefügt
+        CAM_LBL.add(capBTN);
         MAIN_PNL.add(CAM_LBL);
 
+        // Label für die Buttons wird erstellt und ins Fenster eingefügt
         BTN_PNL = new JPanel();
         BTN_PNL.setLayout(null);
         BTN_PNL.setBackground(bg_color1);
         BTN_PNL.setBounds(padding, 2*padding + 480, 640, 100 + 3*padding);
         MAIN_PNL.add(BTN_PNL);
 
+        // Erstellen und Einstellen des Buttons "Klick!"
         CAPTURE_BTN = new JButton("Klick!");
         CAPTURE_BTN.setBounds(padding, padding, 200, 50);
-
         CAPTURE_BTN.setBackground(Color.ORANGE);
+        // Befehl auf Knopfdruck: "cbClicked" wird auf true gesetzt (resultiert in der Aufnahme des Bildes)
         CAPTURE_BTN.addActionListener(e -> cbClicked = true);
+        // Während der Button gedrückt ist wird dessen Hintergrund verändert und ein Soundeffekt wird abgespielt
         CAPTURE_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -91,11 +99,14 @@ public class Cam extends JFrame implements ConstructionHelper {
                 CAPTURE_BTN.setBackground(Color.ORANGE);
             }
         });
+        // Der Button "Klick!" wird hinzugefügt
         BTN_PNL.add(CAPTURE_BTN, BorderLayout.NORTH);
 
+        // Erstellen und Einstellen des Buttons "Schließen"
         EXIT_BTN = new JButton("Schließen");
         EXIT_BTN.setBounds(padding, 2*padding + 50, 200, 50);
         EXIT_BTN.setBackground(buttonColor);
+        // Während der Knopf gedrückt wird verändert sich der Hintergrund des Buttons; Danach wird das Fenster geschlossen
         EXIT_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -109,6 +120,7 @@ public class Cam extends JFrame implements ConstructionHelper {
                 Main.cam.dispose();
             }
         });
+        // Button "Schließen" wird hinzugefügt
         BTN_PNL.add(EXIT_BTN);
 
         setVisible(true);
@@ -129,9 +141,11 @@ public class Cam extends JFrame implements ConstructionHelper {
 
         System.out.println("Cam gestartet");
 
+        // Standard Webcam wird ausgewählt
         cap = new VideoCapture(0);
         image = new Mat();
         cropImage = new Mat();
+        // Hauptteil der Methode wird als Thread ausgeführt
         new Thread() {
             byte[] imageData;
             ImageIcon icon;
@@ -139,11 +153,13 @@ public class Cam extends JFrame implements ConstructionHelper {
             public void run() {
                 boolean cam = Main.cam.cam;
                 while (cam) {
+                    // Aktueller Frame der Webcam wird gespeichert
                     cap.read(image);
 
                     //Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2GRAY, 0);    // sets the image to gray-values
 
                     buf = new MatOfByte();
+                    // Frame wird umgewandelt und in das "CAM_LBL" Label gesetzt
                     try {
                         Imgcodecs.imencode(".jpg", image, buf);
 
@@ -163,9 +179,11 @@ public class Cam extends JFrame implements ConstructionHelper {
                         scanner.close();
                     }
 
+                    // Beim Drücken vom "Zurück" Button wird das Bild in der Bildergalerie gespeichert
                     if (cbClicked) {
                         CAPTURE_BTN.setEnabled(false);
 
+                        // aktueller Frame wird zwischengespeichert
                         InputStream in = new ByteArrayInputStream(buf.toArray());
                         try {
                             img = ImageIO.read(in);
@@ -173,6 +191,7 @@ public class Cam extends JFrame implements ConstructionHelper {
                             e.printStackTrace();
                         }
 
+                        // Bild wird überprüft und im "img" Ordner abgespeichert
                         if (isMatching(img)) {
 
                             BufferedImage subimg = img.getSubimage((640-400)/2, (480-400)/2, 400, 400);
@@ -191,12 +210,14 @@ public class Cam extends JFrame implements ConstructionHelper {
 
                         cbClicked = false;
                         CAPTURE_BTN.setEnabled(true);
+                        // Seite in der Bildergalerie wird neu geladen mit neuem Bild
                         try {
                             Main.libraryPanel.initLib(Main.libraryPanel.getCurrentPage());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
+                    // Fenster wird zum Schließen vorbereitet
                     if (ebClicked) {
                         imageData = null;
                         image.release();

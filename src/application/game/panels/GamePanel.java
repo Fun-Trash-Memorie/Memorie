@@ -14,32 +14,23 @@ public class GamePanel extends JPanel implements ConstructionHelper {
 
     public GamePanel() {
 
+        // Spielbildschirm wird eingestellt
         setBounds(0, 0, width, height);
         setBackground(bg_color1);
         setLayout(null);
 
+        // Einstellungen zum Rendern werden geladen
         GLProfile profile = GLProfile.get(GLProfile.GL3);
         GLCapabilities capabilities = new GLCapabilities(profile);
 
+        // Spielszene wird geladen und dem Spielbildschirm hinzugefügt
         GLCanvas canvas = new Renderer(capabilities);
         canvas.setBounds(0, 0, width, height);
-        FPSAnimator animator = new FPSAnimator(canvas, 60, true);
-
         add(canvas);
 
-
+        // Animator wird gestartet um das Bild vom Rendering zu aktualisieren; Festgesetzt auf 60 FPS (Bilder pro Sekunde)
+        FPSAnimator animator = new FPSAnimator(canvas, 60, true);
         animator.start();
-
-        /*
-        Thread t1 = new Thread(() -> {
-            while (true) {
-                Main.window.setTitle(("Memory | " + animator.getFPS()));
-            }
-        });t1.start();
-
-         */
-
-
 
         setVisible(true);
     }
