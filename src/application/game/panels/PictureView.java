@@ -23,11 +23,12 @@ public class PictureView extends SubWindow implements ConstructionHelper {
     public PictureView(BufferedImage bufferedImage) {
         super("Motiv");
 
+        // Anpassen des Fenster
         setBounds((width-rightFiller)/2 - WIDTH/2, (height-bottomFiller)/2 - HEIGHT/2, WIDTH, HEIGHT);
         setBackground(bg_color2);
         setLayout(null);
 
-
+        // Thread für das Schließen des Fensters
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 Main.window.setEnabled(true);
@@ -35,11 +36,13 @@ public class PictureView extends SubWindow implements ConstructionHelper {
             }
         });
 
+        // Label für das Darstellen des Bildes
         DISPLAY_LBL = new JLabel(new ImageIcon(bufferedImage));
         DISPLAY_LBL.setBackground(bg_color1);
         DISPLAY_LBL.setBounds(margin, margin, WIDTH-2*margin, HEIGHT - margin - padding/2 - height/7);
         add(DISPLAY_LBL);
 
+        // Button für das Schließen des Fensters
         BACK_BTN = new JButton();
         BACK_BTN.setBackground(buttonColor);
         BACK_BTN.setText("Zurück");
@@ -51,6 +54,7 @@ public class PictureView extends SubWindow implements ConstructionHelper {
         });
         add(BACK_BTN);
 
+        // Button für die Überprüfung eines doppelten Bildes (momentan nicht implementier)
         CHECKFORDOUBLE_BTN = new JButton();
         CHECKFORDOUBLE_BTN.setBackground(buttonColor);
         CHECKFORDOUBLE_BTN.setText("Doppelt?");
@@ -71,6 +75,7 @@ public class PictureView extends SubWindow implements ConstructionHelper {
         });
         //add(CHECKFORDOUBLE_BTN);
 
+        // Button zum Löschen eines Bildes (momentan nicht implementiert)
         DELETE_BTN = new JButton();
         DELETE_BTN.setBackground(Color.red);
         DELETE_BTN.setText("Löschen");
