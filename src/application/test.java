@@ -2,7 +2,6 @@ package application;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,19 +17,22 @@ public class test {
 
     public static void main(String[]args) throws IOException, AWTException {
 
-        BufferedImage image = ImageIO.read(new File("src-img/play.png"));
+        BufferedImage image = ImageIO.read(new File("img/Kart1.png"));
+        BufferedImage image2 = ImageIO.read(new File("img/Kart2.png"));
 
         JPanel p = new JPanel();
+        p.setLayout(new FlowLayout());
         p.add(new JLabel(new ImageIcon(image)));
-        p.setPreferredSize(new Dimension(image.getWidth() + 10, image.getHeight() + 10));
+        p.add(new JLabel(new ImageIcon(image2)));
+        p.setPreferredSize(new Dimension(image.getWidth()*2 + 10, image.getHeight() + 10));
 
 
         JFrame f = new JFrame();
-        f.setLocationRelativeTo(null);
 
         f.add(p);
         f.pack();
         f.setVisible(true);
+        f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //BufferedImage screenshot = new BufferedImage(f.getContentPane().getWidth(), f.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -51,7 +53,7 @@ public class test {
                 e.printStackTrace();
             }
 
-            if (picMatcher(image, screenshot)) {
+            if (picMatcher(image2, screenshot)) {
 
                 try {
                     border = resizeImage(ImageIO.read(new File("src-img/Filter_Overlay.png")), bestMatch.width, bestMatch.height);
@@ -118,8 +120,8 @@ public class test {
         System.out.println("ScreenshotSize: " + size_screenshot);
         System.out.println("Size: " + size_filter);
 
-        for (int moveX = 0; moveX < w_screenshot-w_filter; moveX++) {
-            for (int moveY = 0; moveY < h_screenshot-h_filter; moveY++) {
+        for (int moveX = 0; moveX < w_screenshot; moveX++) {
+            for (int moveY = 0; moveY < h_screenshot; moveY++) {
 
                 matches = 0;
 

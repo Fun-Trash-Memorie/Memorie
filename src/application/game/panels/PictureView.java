@@ -69,7 +69,7 @@ public class PictureView extends SubWindow implements ConstructionHelper {
             }
 
         });
-        add(CHECKFORDOUBLE_BTN);
+        //add(CHECKFORDOUBLE_BTN);
 
         DELETE_BTN = new JButton();
         DELETE_BTN.setBackground(Color.red);
@@ -82,7 +82,7 @@ public class PictureView extends SubWindow implements ConstructionHelper {
             Main.window.remove(this);
             Main.window.repaint();
         });
-        add(DELETE_BTN);
+        //add(DELETE_BTN);
 
 
         setVisible(true);
