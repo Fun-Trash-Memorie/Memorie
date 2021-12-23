@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Memorie:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Memorie_jar</output-path>
+    <root id="archive" name="Memorie.jar">
+      <element id="module-output" name="Memorie" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libraries/JOGL/jogamp-all-platforms/jar/gluegen-rt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libraries/JOGL/jogamp-all-platforms/jar/jogl-all.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libraries/OpenCV/opencv-453.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libraries/OBJLoader/OBJLoader-3.0.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
