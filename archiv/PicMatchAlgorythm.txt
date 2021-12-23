@@ -1,0 +1,61 @@
+
+NOTE: Der Algorithmus war zwar sehr langsam, aber ohne weitere Inspiration komplett selbstüberlegt.
+        Leider hat er auch nicht immer gut funktioniert und den Fehler konnte ich leider auch nicht finden.
+
+
+  public static boolean picMatcher(BufferedImage filter, BufferedImage screenshot) {
+
+        int w_filter = filter.getWidth();
+        int h_filter = filter.getHeight();
+
+        int w_screenshot = screenshot.getWidth();
+        int h_screenshot = screenshot.getHeight();
+
+        int size_filter = w_filter * h_filter;
+        int size_screenshot = w_screenshot * h_screenshot;
+        int matches = 0;
+
+        int max = 0;
+
+        int x = 0;
+        int y = 0;
+
+
+        System.out.println("ScreenshotSize: " + size_screenshot);
+        System.out.println("Size: " + size_filter);
+
+        for (int moveX = 0; moveX < w_screenshot-w_filter; moveX++) {
+            for (int moveY = 0; moveY < h_screenshot-h_filter; moveY++) {
+
+                matches = 0;
+
+                for (x = moveX; x < w_filter; x++) {
+                    for (y = moveY; y < h_filter; y++) {
+
+                        if (screenshot.getRGB(x,y) == filter.getRGB(x-moveX,y-moveY)) {
+                            matches++;
+                        }
+
+                    }
+                }
+
+                if (matches > max) {
+                    max = matches;
+
+                    bestMatch = new Rectangle(moveX, moveY, x, y);
+
+                }
+
+
+                System.out.println("x: " + moveX + " y: " + moveY + " matches: " + matches);
+
+        for (int x = xStart - Range / 2; x < xEnd + Range / 2; x++) {
+            for (int y = yStart - Range / 2; y < yStart + Range / 2; y++) {
+                System.out.println(y + " " + x);
+            }
+        }
+
+        System.out.println("Max Matches: " + max + "/" + size_filter);
+
+        return max > size_filter / 2;
+    }

@@ -11,7 +11,7 @@ public class SubWindow extends JFrame implements ConstructionHelper {
 
         System.out.println("SubFenster wird kreiert...");
         setTitle(Titel);
-        setSize(new Dimension(width/2, height/2));
+        setSize(new Dimension(width/2, height));
         setLayout(null);
         setLocationRelativeTo(null);
         setFocusable(true);
