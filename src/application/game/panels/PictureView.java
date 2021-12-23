@@ -140,13 +140,6 @@ public class PictureView extends SubWindow implements ConstructionHelper {
                     System.out.println("Es ist kein Match. :(");
                 }
 
-                // der temporäre screenshot wird wieder freigegeben
-                try {
-                    Files.deleteIfExists(Paths.get(String.valueOf(temp)));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                setVisible(true);
             }).start();
 
 
