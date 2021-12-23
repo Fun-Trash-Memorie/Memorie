@@ -239,12 +239,13 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         // aktuell angezeigte Bilder werden entfernt
         LIB_PNL.removeAll();
 
-        // zwei Listen werden erstellt: "liblist_BI" für die Bilder und "liblist_BTN" für die Buttons, auf denen nachher die Bilder dargestellt werden
-
-        ArrayList<String> liblist_URL = new ArrayList<>();
-
+        // drei Listen werden erstellt:
+        //      "liblist_BI" für die Bilder
+        //      "liblist_BTN" für die Buttons, auf denen nachher die Bilder dargestellt werden
+        //  und "liblist_URL" für die Strings der die URL -> den Pfad zu den Bilddateien
         ArrayList<BufferedImage> liblist_BI = new ArrayList<>();
         liblist_BTN = new ArrayList<>();
+        ArrayList<String> liblist_URL = new ArrayList<>();
 
         // Pfad für die Bilder wird auf den "img" Ordner gestellt und Bildpfade werden in die "pathnames" Liste gespeichert
         File dir = new File("img");
@@ -286,13 +287,10 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             // Button wird in die richtige Position gebracht
             if (count > PICS_ONPAGE*(page-1) && count <= PICS_ONPAGE*page) {
                 if (count <= PICS_ONPAGE*(page-1) + PICS_ONPAGE/2) {
-
                     b.setBounds(margin + padding*(count-1-PICS_ONPAGE*(page-1)) + PIC_SIZE*(count-1-PICS_ONPAGE*(page-1)), margin, PIC_SIZE, PIC_SIZE);
-
                 } else {
                     int i = count-PICS_ONPAGE/2-PICS_ONPAGE*(page-1);
                     b.setBounds(margin + padding*(i-1) + PIC_SIZE*(i-1), margin + padding + PIC_SIZE, PIC_SIZE, PIC_SIZE);
-
                 }
             }
 
@@ -312,14 +310,18 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
      * @Source https://www.baeldung.com/java-resize-image
      *
      */
+    // Methode zum korrekten zuschneiden von Bildern
     private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
 
+        // Neues Bild wird erstellt
         BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
 
+        // Neues Bild wird gezeichnet
         Graphics2D graphics2D = resizedImage.createGraphics();
         graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
         graphics2D.dispose();
 
+        // Neues Bild wird zurückgegeben
         return resizedImage;
     }
 
