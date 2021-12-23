@@ -38,6 +38,7 @@ public class GameSelectPanel extends JPanel implements ConstructionHelper {
         // Befehl auf Knopfdruck: Spielauswahlmenü wird durch Spielbildschirm ersetzt
         b_PvE.addActionListener(e -> {
             System.out.println("PvE wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("KlickSound.wav");
 
 
             Main.gameSelectPanel.setVisible(false);
@@ -66,6 +67,7 @@ public class GameSelectPanel extends JPanel implements ConstructionHelper {
         // Befehl auf Knopfdruck: Spielauswahlmenü wird durch Spielbildschirm ersetzt
         b_PvP.addActionListener(e -> {
             System.out.println("PvP wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("KlickSound.wav");
 
             Main.gameSelectPanel.setVisible(false);
             Main.window.remove(Main.gameSelectPanel);

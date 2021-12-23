@@ -82,6 +82,7 @@ public class MainMenuPanel extends JPanel implements ConstructionHelper { //Das 
         // Befehl auf Knopfdruck: Hauptmenü wird durch Spielauswahlmenü ersetzt
         PLAY_BTN.addActionListener(e -> {
             System.out.println("Spielen wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("KlickSound.wav");
 
             Main.mainMenuPanel.setVisible(false);
             Main.window.remove(Main.mainMenuPanel);
@@ -108,6 +109,7 @@ public class MainMenuPanel extends JPanel implements ConstructionHelper { //Das 
         // Befehl auf Knopfdruck: Hauptmenü wird durch die Bildergalerie ersetzt
         LIB_BTN.addActionListener(e -> {
             System.out.println("Sammlung wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("KlickSound.wav");
 
             Main.mainMenuPanel.setVisible(false);
             Main.window.remove(Main.mainMenuPanel);
@@ -134,6 +136,7 @@ public class MainMenuPanel extends JPanel implements ConstructionHelper { //Das 
         //Befehl auf Knofpdruck: Hauptmenü wird durch Einstellungsmenü ersetzt
         OPT_BTN.addActionListener(e -> {
             System.out.println("Einstellungen wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("KlickSound.wav");
 
             Main.mainMenuPanel.setVisible(false);
             Main.window.remove(Main.mainMenuPanel);
@@ -164,6 +167,7 @@ public class MainMenuPanel extends JPanel implements ConstructionHelper { //Das 
         // Befehl auf Knopfdruck: Anwendung wird geschlossen
         EXIT_BTN.addActionListener(e -> {
             System.out.println("Beenden wurde ausgewählt.");
+            Main.soundSystem = new SoundSystem("KlickSound.wav");
             System.exit(0);
         });
         // Hervorhebung des Textes beim Hovern
