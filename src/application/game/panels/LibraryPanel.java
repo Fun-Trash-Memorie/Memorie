@@ -43,6 +43,8 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
     private final int PICS_ONPAGE = 8;
 
     public ArrayList<JButton> liblist_BTN;
+    public ArrayList<String> liblist_URL;
+    public ArrayList<BufferedImage> liblist_BI;
 
     public LibraryPanel() throws IOException {
 
@@ -243,9 +245,9 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         //      "liblist_BI" für die Bilder
         //      "liblist_BTN" für die Buttons, auf denen nachher die Bilder dargestellt werden
         //  und "liblist_URL" für die Strings der die URL -> den Pfad zu den Bilddateien
-        ArrayList<BufferedImage> liblist_BI = new ArrayList<>();
+        liblist_BI = new ArrayList<>();
         liblist_BTN = new ArrayList<>();
-        ArrayList<String> liblist_URL = new ArrayList<>();
+        liblist_URL = new ArrayList<>();
 
         // Pfad für die Bilder wird auf den "img" Ordner gestellt und Bildpfade werden in die "pathnames" Liste gespeichert
         File dir = new File("img");
@@ -294,7 +296,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             }
 
             // Blättern der Seiten wird auf Verfügbarkeit überprüft
-            NEXTPAGE_BTN.setEnabled(liblist_BI.size() > page * 10);
+            NEXTPAGE_BTN.setEnabled(liblist_BI.size() > page * PICS_ONPAGE);
             PREVPAGE_BTN.setEnabled(page != 1);
 
             // Seitenzahl sowie Bilder werden angezeigt

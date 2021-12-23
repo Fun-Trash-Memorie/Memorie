@@ -107,7 +107,7 @@ public class PictureView extends SubWindow implements ConstructionHelper {
                 setVisible(true);
                 Main.libraryPanel.liblist_BTN.get(id).setVisible(true);
 
-                // Nun wird die PictureFinder klasse neu instanziert mit dem pfad des screenshots und des gesuchten Bildes
+                // Nun wird die PictureFinder klasse neu instanziiert mit dem Pfad des screenshots und des gesuchten Bildes
                 Main.picFinder = new PictureFinder(temp.toString(), path);
 
                 // Anschließend wird der Match-Punkt sowie das Objekt was sich an dieser Stelle befindet ausgegeben
@@ -121,13 +121,31 @@ public class PictureView extends SubWindow implements ConstructionHelper {
                 // Zur visualisierung des gefundenen knopfes, wird dieser geschrumpft
                 compIWant.setSize(100, 100);
 
+                // die URL -> der Pfad der Textur des Zielknopfes wird bestimmt und verglichen mit dem
+                // Pfad des Templates
+                JButton buttonIWant = (JButton)compIWant;
+                int indexIWant = Main.libraryPanel.liblist_BTN.indexOf(buttonIWant);
+                String URLIWant = Main.libraryPanel.liblist_URL.get(indexIWant);
+
+                System.out.println(indexIWant);
+                System.out.println(URLIWant);
+                System.out.println(path);
+
+                // Da die Bilder in der Galerie künstlich doppelt im Verzeichnis liegen,
+                // wird immer der Fall immer "false" ergeben.
+                // Im richtigen Spiel würde das Bild nur einmal im Verzeichnis liegen aber 2mal geladen werden.
+                if ((URLIWant.equals(path))) {
+                    System.out.println("Es ist ein Match!");
+                } else {
+                    System.out.println("Es ist kein Match. :(");
+                }
+
                 // der temporäre screenshot wird wieder freigegeben
                 try {
                     Files.deleteIfExists(Paths.get(String.valueOf(temp)));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                System.out.println(path);
                 setVisible(true);
             }).start();
 

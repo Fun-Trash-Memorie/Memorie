@@ -106,13 +106,13 @@ public class Cam extends JFrame implements ConstructionHelper {
         EXIT_BTN = new JButton("Schließen");
         EXIT_BTN.setBounds(padding, 2*padding + 50, 200, 50);
         EXIT_BTN.setBackground(buttonColor);
-        // Während der Knopf gedrückt wird verändert sich der Hintergrund des Buttons; Danach wird das Fenster geschlossen
+        // Während der Knopf gedrückt wird verändert sich der Hintergrund des Buttons
+        // Danach wird das Fenster geschlossen
         EXIT_BTN.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 EXIT_BTN.setBackground(Color.gray);
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
                 EXIT_BTN.setBackground(buttonColor);
@@ -128,6 +128,7 @@ public class Cam extends JFrame implements ConstructionHelper {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                // alle möglichen Ressourcen werden freigegeben und die cam-loop wird beendet
                 image.release();
                 cap.release();
                 buf.release();
@@ -140,7 +141,6 @@ public class Cam extends JFrame implements ConstructionHelper {
     public void startCam() {
 
         System.out.println("Cam gestartet");
-
         // Standard Webcam wird ausgewählt
         cap = new VideoCapture(0);
         image = new Mat();
@@ -153,24 +153,20 @@ public class Cam extends JFrame implements ConstructionHelper {
             public void run() {
                 boolean cam = Main.cam.cam;
                 while (cam) {
-                    // Aktueller Frame der Webcam wird gespeichert
+                    // Aktueller Frame der Webcam wird in einer Matrix gespeichert
                     cap.read(image);
-
-                    //Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2GRAY, 0);    // sets the image to gray-values
 
                     buf = new MatOfByte();
                     // Frame wird umgewandelt und in das "CAM_LBL" Label gesetzt
                     try {
                         Imgcodecs.imencode(".jpg", image, buf);
-
                         imageData = buf.toArray();
-
                         icon = new ImageIcon(imageData);
 
                         CAM_LBL.setIcon(icon);
-                        //CAM_LBL.setBounds(padding, padding, icon.getIconWidth(), icon.getIconHeight());
-
                     } catch (Exception e) {
+                        // Für den Fall das die Kamera nicht gefunden wurde kann man sich den Stacktrace anzeigen lassen,
+                        // um möglicherweise den Grund herauszufinden, wenn dieser nicht klar sein sollte.
                         System.err.println("Keine Kamera gefunden. Show Stack-trace?    [y][n]");
                         Scanner scanner = new Scanner(System.in);
                         String s = scanner.nextLine();
@@ -178,11 +174,9 @@ public class Cam extends JFrame implements ConstructionHelper {
                             e.printStackTrace();
                         scanner.close();
                     }
-
-                    // Beim Drücken vom "Zurück" Button wird das Bild in der Bildergalerie gespeichert
+                    // Beim Drücken vom "Click" Button wird das Bild in der Bildergalerie gespeichert
                     if (cbClicked) {
                         CAPTURE_BTN.setEnabled(false);
-
                         // aktueller Frame wird zwischengespeichert
                         InputStream in = new ByteArrayInputStream(buf.toArray());
                         try {
@@ -190,11 +184,10 @@ public class Cam extends JFrame implements ConstructionHelper {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
-                        // Bild wird überprüft und im "img" Ordner abgespeichert
+                        // Bild wird überprüft, zugeschnitten und im "img" Ordner abgespeichert
                         if (isMatching(img)) {
 
-                            BufferedImage subimg = img.getSubimage((640-400)/2, (480-400)/2, 400, 400);
+                            BufferedImage subimg = img.getSubimage((640-200)/2, (480-200)/2, 200, 200);
 
                             byte[] pixels = ((DataBufferByte) subimg.getRaster().getDataBuffer()).getData();
                             cropImage.put(0, 0, pixels);
@@ -217,7 +210,7 @@ public class Cam extends JFrame implements ConstructionHelper {
                             e.printStackTrace();
                         }
                     }
-                    // Fenster wird zum Schließen vorbereitet
+                    // Fenster wird zum Schließen vorbereitet -> Ressourcen werden freigegeben
                     if (ebClicked) {
                         imageData = null;
                         image.release();
@@ -233,34 +226,36 @@ public class Cam extends JFrame implements ConstructionHelper {
 
     }
 
-
-
+    // Der Matching-Algorithmus überprüft das erhaltene Bild mittig nach einem roten Rahmen
     private boolean isMatching(BufferedImage image) {
-
+        // Maße werden definiert
         int cap_width = 640;
         int cap_height = 480;
-
-        int x = FILTER_OVERLAY.getWidth();  // 408px
-        int y = FILTER_OVERLAY.getHeight(); // 408px
+        int x = FILTER_OVERLAY.getWidth();  // 220px
+        int y = FILTER_OVERLAY.getHeight(); // 220px
 
         boolean match = false;
         int matches = 0;
 
+        // Der vom Overlay markierte Bereich wird gescannt
         for (int i = (cap_width-x)/2; i < x; i++) {
             for (int j = (cap_height-y)/2; j < y; j++) {
 
+                // Die Farbwerte des aktuellen Pixels werden bestimmt
                 int f_pixel = FILTER_OVERLAY.getRGB(i, j);
-                Color f_c = new Color(f_pixel, true);
-
+                Color fc = new Color(f_pixel, true);
                 int pixel = image.getRGB(i, j);
                 Color c = new Color(pixel, true);
 
-                if (f_c.getRed() == 229) {
+                // Da der Rot-Wert des Overlays 228 beträgt, wird dieser mit dem Rot-Wert
+                // des aktuellen Pixels verglichen. Wenn dieser Vergleich "true" ergibt, wird der
+                // eigentliche Bild-Pixel dem Farbabgleich unterzogen.
+                if (fc.getRed() == 228) {
 
-                    if (c.getRed()-10 > c.getGreen() && c.getRed()-10 > c.getBlue()) {
+                    // Farbabgleich mit dem nearBy()-Algorithmus
+                    if (nearBy(c, fc)) {
                         match = true;
                     }
-
                     if (match) {
                         matches++;
                         match = false;
@@ -268,47 +263,31 @@ public class Cam extends JFrame implements ConstructionHelper {
                 }
             }
         }
+        // Die Anzahl der Matches wird in der Console ausgegeben
         System.out.println(matches);
-        System.out.println(FILTER_OVERLAY.getWidth() + " " + FILTER_OVERLAY.getHeight());
-        return matches > 1000;
+        // Wenn die Anzahl der Matches größer als 650 ist, gibt die Methode den Wert "true" zurück.
+        return matches > 650;
     }
 
+    // Der typ-boolean Algorithmus "nearBy()" überprüft zwei Farben auf ihre Ähnlichkeit
+    private boolean nearBy(Color c, Color f_c) {
+        int cR = c.getRed();
+        int cG = c.getGreen();
+        int cB = c.getBlue();
 
-    public boolean picMatcher(BufferedImage filter, BufferedImage screenshot) {
+        int fcR = f_c.getRed();
+        int fcG = f_c.getGreen();
+        int fcB = f_c.getBlue();
 
-        int w_filter = filter.getWidth();
-        int h_filter = filter.getHeight();
+        // Differenz aller Farbwerte beider Farben wird berechnet
+        int dr = Math.abs(cR - fcR);
+        int dg = Math.abs(cG - fcG);
+        int db = Math.abs(cB - fcB);
 
-        int w_screenshot = screenshot.getWidth();
-        int h_screenshot = screenshot.getHeight();
+        // Durchschnitt aller 3 Differenzen wird berechnet
+        int d_average = (dr+db+dg)/3;
 
-        int size_filter = w_filter * h_filter;
-        int matches = 0;
-
-        System.out.println("Size: " + size_filter);
-
-        for (int moveX = 0; moveX < w_screenshot-w_filter && matches<size_filter; moveX++) {
-            for (int moveY = 0; moveY < h_screenshot-h_filter && matches<size_filter; moveY++) {
-
-                for (int x = moveX; x < w_filter; x++) {
-                    for (int y = moveY; y < h_filter; y++) {
-
-                        if (screenshot.getRGB(x,y) == filter.getRGB(x-moveX,y-moveY)) {
-                            matches++;
-                        }
-
-                    }
-                }
-
-            }
-        }
-
-        System.out.println("Matches: " + matches);
-
-        if (matches == size_filter) {
-            return true;
-        } else {
-            return false;
-        }
+        // Bei einer durchschnittlichen Differenz von weniger als 60, gibt die Methode "true" zurück.
+        return d_average < 60;
     }
-}
+ }
