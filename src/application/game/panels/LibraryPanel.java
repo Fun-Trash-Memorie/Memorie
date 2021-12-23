@@ -27,7 +27,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
 
     private final JButton CAM_BTN, BACK_BTN, NEXTPAGE_BTN, PREVPAGE_BTN, EXPLORER_BTN;
 
-    private final JPanel LIB_PNL;
+    public final JPanel LIB_PNL;
 
     private final JLabel INDEX_LBL;
 
@@ -37,10 +37,12 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
     private final int LIB_WIDTH = width-rightFiller-2*margin;
     private final int LIB_HEIGHT = height-margin*2-btn_height-padding-bottomFiller;
 
-    private final int PIC_SIZE = (LIB_WIDTH - 2*margin - 4*padding)/5;
+    //private final int PIC_SIZE = (LIB_WIDTH - 2*margin - 4*padding)/5;
+    private final int PIC_SIZE = 200;
 
-    private final int PICS_ONPAGE = 10;
+    private final int PICS_ONPAGE = 8;
 
+    public ArrayList<JButton> liblist_BTN;
 
     public LibraryPanel() throws IOException {
 
@@ -95,7 +97,8 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         EXPLORER_BTN.setBounds(width/2 - (btn_width*2)/3 - padding, height-btn_height-bottomFiller-margin, (2*btn_width)/3, btn_height);
         EXPLORER_BTN.setBackground(buttonColor);
         EXPLORER_BTN.setFont(buttonFont);
-        // Befehl auf Knopfdruck: Neues Fenster zum Einfügen neuer Bilder wird geöffnet
+
+        // Befehl auf Knopfdruck: Explorer zum Einfügen neuer Bilder wird geöffnet
         EXPLORER_BTN.addActionListener(e -> {
             fileChooser = new JFileChooser("c:/");
             fileChooser.addChoosableFileFilter(new FileFilter() {
@@ -104,12 +107,12 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
                     if (f.isDirectory()) {
                         return true;
                     } else {
-                        return f.getName().toLowerCase().endsWith(".jpg");
+                        return f.getName().toLowerCase().endsWith(".jpg") | f.getName().toLowerCase().endsWith(".png");
                     }
                 }
                 @Override
                 public String getDescription() {
-                    return "JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)";
+                    return "JPEG/PNG (*.jpg;*.jpeg;*.jpe;*.jfif;*.png;*.PNG)";
                 }
             });
 
@@ -237,8 +240,11 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         LIB_PNL.removeAll();
 
         // zwei Listen werden erstellt: "liblist_BI" für die Bilder und "liblist_BTN" für die Buttons, auf denen nachher die Bilder dargestellt werden
+
+        ArrayList<String> liblist_URL = new ArrayList<>();
+
         ArrayList<BufferedImage> liblist_BI = new ArrayList<>();
-        ArrayList<JButton> liblist_BTN = new ArrayList<>();
+        liblist_BTN = new ArrayList<>();
 
         // Pfad für die Bilder wird auf den "img" Ordner gestellt und Bildpfade werden in die "pathnames" Liste gespeichert
         File dir = new File("img");
@@ -250,6 +256,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             //System.out.println(pathnames[i]);
 
             BufferedImage bi = ImageIO.read(new File("img/" + pathnames[i]));
+            liblist_URL.add("img/" + pathnames[i]);
             liblist_BI.add(resizeImage(bi, PIC_SIZE, PIC_SIZE));
 
         }
@@ -257,14 +264,20 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
         // Buttons werden mit den Bildern in die Liste "liblist_BTN" eingefügt
         int count = 0;
         for (BufferedImage bi : liblist_BI) {
+            int c = count;
             count++;
 
             // einzelner Button wird mit einem Bild erstellt
+
             JButton b = new JButton(new ImageIcon(bi));
             // Befehl auf Knopfdruck: Bildansicht wird in einem neuen Fenster geöffnet
             b.addActionListener(e -> {
                 Main.window.setEnabled(false);
-                Main.subWindow = new PictureView(bi);
+                try {
+                    Main.subWindow = new PictureView(liblist_URL.get(c), c);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
             });
             // Button wird in die Liste "liblist_BTN" gespeichert
@@ -277,7 +290,7 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
                     b.setBounds(margin + padding*(count-1-PICS_ONPAGE*(page-1)) + PIC_SIZE*(count-1-PICS_ONPAGE*(page-1)), margin, PIC_SIZE, PIC_SIZE);
 
                 } else {
-                    int i = count-5-PICS_ONPAGE*(page-1);
+                    int i = count-PICS_ONPAGE/2-PICS_ONPAGE*(page-1);
                     b.setBounds(margin + padding*(i-1) + PIC_SIZE*(i-1), margin + padding + PIC_SIZE, PIC_SIZE, PIC_SIZE);
 
                 }

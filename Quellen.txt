@@ -10,5 +10,8 @@ https://stackoverflow.com/questions/3680221/how-can-i-get-screen-resolution-in-j
 https://www.baeldung.com/java-resize-image
     ~resizing image using Graphics2D
 
+https://riptutorial.com/opencv/example/22915/template-matching-with-java
+    ~template matching in java
+
 backgroundmusik:
 https://www.musicfox.com/info/kostenlose-gemafreie-musik.php

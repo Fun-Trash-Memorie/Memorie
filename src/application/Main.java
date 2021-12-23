@@ -1,6 +1,7 @@
 package application;
 
 import application.game.camera.Cam;
+import application.game.engine.PictureFinder;
 import application.game.panels.*;
 import application.game.sound.SoundSystem;
 import application.window.*;
@@ -23,6 +24,7 @@ public class Main {
     public static GamePanel gamePanel;
     public static Window window;
     public static SubWindow subWindow;
+    public static PictureFinder picFinder;
 
     public static void main(String[] args) throws IOException {
 
@@ -42,6 +44,7 @@ public class Main {
         gameSelectPanel = new GameSelectPanel();
         libraryPanel = new LibraryPanel();
         settingPanel = new SettingPanel();
+        picFinder = null;
 
         //Hauptmenü zum Fenster zuweisen und anzeigen
         window.add(mainMenuPanel);
