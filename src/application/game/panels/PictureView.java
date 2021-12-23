@@ -72,6 +72,7 @@ public class PictureView extends SubWindow implements ConstructionHelper {
             setVisible(false);
             Main.libraryPanel.liblist_BTN.get(id).setVisible(false);
             // Das Hauptfenster wird in der Vordergrund gebracht
+            setVisible(false);
             Main.window.toFront();
             Main.window.requestFocus();
 
@@ -95,8 +96,8 @@ public class PictureView extends SubWindow implements ConstructionHelper {
 
                 // Der Screenshot wird erstellt und gespeichert
                 BufferedImage screenshot = robot.createScreenCapture(captureRec);
+                File temp = new File("temp/screenshot");
                 try {
-                    temp = new File("temp/screenshot.png");
                     ImageIO.write(screenshot,"png", temp);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -126,6 +127,8 @@ public class PictureView extends SubWindow implements ConstructionHelper {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
+                System.out.println(path);
+                setVisible(true);
             }).start();
 
 

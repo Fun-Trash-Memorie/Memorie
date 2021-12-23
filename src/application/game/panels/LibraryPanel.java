@@ -269,7 +269,6 @@ public class LibraryPanel extends JPanel implements ConstructionHelper {
             count++;
 
             // einzelner Button wird mit einem Bild erstellt
-
             JButton b = new JButton(new ImageIcon(bi));
             // Befehl auf Knopfdruck: Bildansicht wird in einem neuen Fenster geöffnet
             b.addActionListener(e -> {

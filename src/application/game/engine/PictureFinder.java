@@ -43,6 +43,9 @@ public class PictureFinder {
                 matchLoc.y + template.rows()), new Scalar(255, 255, 255));
 
         // Das Bild mit dem Ergebnis wir abgespeichert im Standardverzeichnis des Projektes
+        Imgproc.rectangle(source, matchLoc, new Point(matchLoc.x + template.cols(),
+                matchLoc.y + template.rows()), new Scalar(255, 255, 255));
+
         Imgcodecs.imwrite("gefunden.jpg", source);
         System.out.println("Completed.");
 
